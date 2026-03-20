@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRI Life Calculator · Where Should I Live? · RupeeStories</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFFBF5;--cream-dark:#F3F0EA;--navy:#151739;--navy-mid:#1E2347;
+  --gold:#D7AE43;--gold-light:#F0DFA0;
+  --green:#2E7D52;--green-light:#E8F5EE;
+  --red:#C0392B;--red-light:#FDEDEC;
+  --amber:#B7620A;--amber-light:#FEF3E2;
+  --blue:#1A5F9E;--blue-light:#EBF3FB;
+  --purple:#6B3FA0;--purple-light:#F0E8FD;
+  --text:#18203B;--text-mid:#4A5275;--text-light:#8891A8;
+  --border:#E2D8C8;--shadow:0 4px 24px rgba(21,23,57,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.6}
+/* HERO */
+.hero{background:var(--navy);padding:56px 24px 72px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(215,174,67,.1) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-block;background:rgba(215,174,67,.15);color:var(--gold-light);border:1px solid rgba(215,174,67,.3);border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;margin-bottom:18px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5.5vw,50px);color:#fff;line-height:1.1;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:#A9B0C8;max-width:600px;margin:0 auto;font-size:15px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+.hero-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;color:#C5CBE0;font-size:12px;padding:4px 12px}
+/* PRESET BAR */
+.preset-bar{background:var(--navy-mid);padding:10px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.06)}
+.preset-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);flex-shrink:0}
+.preset-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#A9B0C8;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 14px;cursor:pointer;transition:all .15s}
+.preset-btn:hover{background:rgba(215,174,67,.15);border-color:rgba(215,174,67,.4);color:var(--gold)}
+/* STEP NAV */
+.step-nav{background:var(--navy);display:flex;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:100}
+.step-btn{flex:1;padding:12px 6px;background:none;border:none;color:#6B7394;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
+.step-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:rgba(215,174,67,.15);color:var(--gold);font-size:10px;margin-right:4px}
+.step-btn.active .step-num{background:var(--gold);color:var(--navy)}
+/* LAYOUT */
+.wrapper{max-width:1060px;margin:0 auto;padding:0 20px 60px}
+.step-pane{display:none;margin-top:22px}
+.step-pane.active{display:block}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media(max-width:640px){.section-grid{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:16px;border:1px solid var(--border);padding:22px;box-shadow:var(--shadow)}
+.card-full{grid-column:1/-1}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.sec-icon{width:34px;height:34px;border-radius:10px;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sec-hdr h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--navy)}
+.sec-hdr p{font-size:12px;color:var(--text-light)}
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.tip{background:var(--cream-dark);color:var(--text-light);border-radius:999px;font-size:10px;padding:1px 7px;font-weight:500;text-transform:none;letter-spacing:0;cursor:default}
+.field input,.field select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Mono',monospace;font-size:14px;color:var(--text);background:var(--cream);transition:border-color .2s;appearance:none}
+.field input:focus,.field select:focus{outline:none;border-color:var(--gold);background:#fff}
+.prefix-wrap{position:relative}
+.prefix{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-light);pointer-events:none;font-family:'DM Sans',sans-serif;font-weight:600}
+.prefix-wrap input{padding-left:25px}
+.hint{font-size:11px;color:var(--text-light);margin-top:3px;line-height:1.4}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px}
+.radio-option{cursor:pointer}
+.radio-option input{display:none}
+.radio-option span{display:block;padding:7px 13px;border:1.5px solid var(--border);border-radius:999px;font-size:13px;font-weight:500;color:var(--text-mid);transition:all .15s}
+.radio-option input:checked+span{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* SLIDER */
+.slider-field input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;outline:none;background:linear-gradient(to right,var(--gold) 0%,var(--gold) var(--pct,50%),var(--border) var(--pct,50%));cursor:pointer}
+.slider-field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--navy);border:3px solid var(--gold);cursor:pointer}
+.slider-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--gold);text-align:right;margin-bottom:6px}
+/* COUNTRY GRID */
+.country-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.country-grid{grid-template-columns:repeat(2,1fr)}}
+.country-card{cursor:pointer;display:block}
+.country-card input{display:none}
+.cc-inner{border:1.5px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:all .15s;background:#fff}
+.cc-flag{font-size:26px;margin-bottom:5px}
+.cc-name{font-size:12px;font-weight:700;color:var(--navy)}
+.cc-sub{font-size:10px;color:var(--text-light);margin-top:2px}
+.country-card input:checked+.cc-inner{background:var(--navy);border-color:var(--navy)}
+.country-card input:checked+.cc-inner .cc-name,.country-card input:checked+.cc-inner .cc-sub{color:rgba(255,255,255,.8)}
+/* PRIORITY */
+.priority-grid{display:flex;flex-direction:column;gap:12px}
+.priority-row{display:grid;grid-template-columns:150px 1fr 30px;align-items:center;gap:10px}
+.priority-row label{font-size:13px;font-weight:600;color:var(--text-mid)}
+.priority-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);text-align:right}
+/* ANALYZE BTN */
+.analyze-wrap{text-align:center;margin-top:28px}
+.btn-analyze{background:var(--gold);color:var(--navy);border:none;border-radius:999px;padding:16px 52px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 32px rgba(215,174,67,.4);transition:all .2s}
+.btn-analyze:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(215,174,67,.5)}
+/* NOTICE */
+.notice{background:var(--amber-light);border:1px solid #F5C98A;border-radius:10px;padding:11px 14px;font-size:13px;color:var(--amber);margin-bottom:14px}
+.notice strong{font-weight:700}
+</style>
+<style>
+/* ─── RESULTS CSS ─────────────────────────────────────────────── */
+#results{display:none;margin-top:28px}
+.result-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.result-nav a{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mid);background:#fff;border:1px solid var(--border);border-radius:999px;padding:4px 12px;text-decoration:none;transition:all .15s}
+.result-nav a:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* PICK CARDS */
+.picks-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:700px){.picks-row{grid-template-columns:1fr}}
+.pick-card{border-radius:18px;padding:24px;color:#fff;position:relative;overflow:hidden}
+.pick-card.rank-1{background:linear-gradient(135deg,#1B4332,#2E7D52)}
+.pick-card.rank-2{background:linear-gradient(135deg,#1a3a6b,#1A5F9E)}
+.pick-card.rank-3{background:linear-gradient(135deg,#4a3000,#B7620A)}
+.pick-rank{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:6px}
+.pick-flag{font-size:30px;margin-bottom:6px}
+.pick-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:3px}
+.pick-sub{font-size:11px;opacity:.7;margin-bottom:12px}
+.pick-direction{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 12px;font-size:11px;font-weight:700;margin-bottom:10px}
+.pick-score-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pick-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:4px 10px;font-size:11px;font-family:'DM Mono',monospace}
+.pick-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.pm{background:rgba(255,255,255,.1);border-radius:8px;padding:8px 10px}
+.pm-label{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.06em}
+.pm-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;margin-top:1px}
+.pick-sentiment{margin-top:12px;font-size:12px;opacity:.85;line-height:1.5;border-top:1px solid rgba(255,255,255,.15);padding-top:10px}
+/* EQUIVALENCE CARD */
+.equiv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.equiv-grid{grid-template-columns:1fr}}
+.equiv-card{border-radius:14px;padding:16px;border:1.5px solid var(--border);background:#fff}
+.equiv-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.equiv-flag{font-size:22px}
+.equiv-name{font-size:13px;font-weight:700;color:var(--navy)}
+.equiv-direction{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.dir-up{background:var(--green-light);color:var(--green)}
+.dir-same{background:var(--blue-light);color:var(--blue)}
+.dir-down{background:var(--red-light);color:var(--red)}
+.equiv-income{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--navy);margin-bottom:3px}
+.equiv-income-label{font-size:11px;color:var(--text-light);margin-bottom:8px}
+.equiv-gap{font-size:12px;padding:4px 10px;border-radius:8px;display:inline-block;font-weight:600}
+.gap-pos{background:var(--green-light);color:var(--green)}
+.gap-neg{background:var(--red-light);color:var(--red)}
+.gap-flat{background:var(--cream-dark);color:var(--text-mid)}
+/* QOL SCORES */
+.qol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.qol-grid{grid-template-columns:1fr}}
+.qol-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px}
+.qol-flag{font-size:20px;margin-bottom:6px}
+.qol-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.qol-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.qol-label{font-size:11px;color:var(--text-light);width:90px;flex-shrink:0}
+.qol-bar-bg{flex:1;height:5px;background:var(--cream-dark);border-radius:5px;overflow:hidden}
+.qol-bar-fill{height:100%;border-radius:5px;transition:width .5s}
+.qol-score{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-mid);width:22px;text-align:right}
+/* HIDDEN COSTS */
+.hc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.hc-grid{grid-template-columns:1fr}}
+.hc-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:14px}
+.hc-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.hc-flag{font-size:18px}
+.hc-name{font-size:12px;font-weight:700;color:var(--navy)}
+.hc-item{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.hc-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.hc-item-label{color:var(--text-mid)}
+.hc-item-val{font-family:'DM Mono',monospace;font-weight:600;color:var(--navy);font-size:11px}
+.hc-total{margin-top:8px;padding-top:8px;border-top:1.5px solid var(--border);display:flex;justify-content:space-between;font-weight:700;font-size:13px;color:var(--navy)}
+/* METRICS TABLE */
+.metrics-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.metrics-table th{padding:9px 10px;text-align:right;background:var(--cream-dark);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mid);font-weight:700;white-space:nowrap}
+.metrics-table th:first-child{text-align:left;border-radius:8px 0 0 8px}
+.metrics-table th:last-child{border-radius:0 8px 8px 0}
+.metrics-table td{padding:10px 10px;border-bottom:1px solid var(--cream-dark);text-align:right;font-family:'DM Mono',monospace;font-size:12px}
+.metrics-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-weight:700;color:var(--navy)}
+.metrics-table tr:last-child td{border-bottom:none}
+.tag-up{background:var(--green-light);color:var(--green);border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif}
+.tag-same{background:var(--blue-light);color:var(--blue);border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif}
+.tag-down{background:var(--red-light);color:var(--red);border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif}
+.good{color:var(--green);font-weight:600}
+.warn{color:var(--amber);font-weight:600}
+.bad{color:var(--red)}
+/* SCENARIOS */
+.scen3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.scen3{grid-template-columns:1fr}}
+.sc{border-radius:12px;padding:14px;border:1.5px solid var(--border)}
+.sc.g{background:var(--green-light);border-color:#A8D5BB}
+.sc.a{background:var(--amber-light);border-color:#F5C98A}
+.sc.r{background:var(--red-light);border-color:#F1A79E}
+.sc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.sc.g .sc-title{color:var(--green)}.sc.a .sc-title{color:var(--amber)}.sc.r .sc-title{color:var(--red)}
+.sc-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--navy);margin-bottom:3px}
+.sc-desc{font-size:11px;color:var(--text-mid);line-height:1.4}
+/* RISK FLAGS */
+.risk-item{display:flex;align-items:flex-start;gap:11px;padding:10px 13px;border-radius:10px;border:1px solid transparent;margin-bottom:7px}
+.risk-item.risk-red{background:var(--red-light);border-color:#F1A79E}
+.risk-item.risk-amber{background:var(--amber-light);border-color:#F5C98A}
+.risk-item.risk-green{background:var(--green-light);border-color:#A8D5BB}
+.risk-item.risk-blue{background:var(--blue-light);border-color:#9FC4E8}
+.rdot{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.risk-red .rdot{background:var(--red)}.risk-amber .rdot{background:var(--amber)}
+.risk-green .rdot{background:var(--green)}.risk-blue .rdot{background:var(--blue)}
+.risk-text{font-size:13px;line-height:1.4}
+.risk-text strong{display:block;font-weight:600;margin-bottom:2px}
+.risk-text span{color:var(--text-mid);font-size:12px}
+/* CHOOSE */
+.choose-card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:12px;padding:15px 17px;margin-bottom:10px}
+.choose-hdr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.choose-body{font-size:13px;color:var(--text-mid);line-height:1.55}
+.choose-body strong{color:var(--navy)}
+/* BEST-FOR */
+.best-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.best-grid{grid-template-columns:1fr 1fr}}
+.best-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:13px}
+.best-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px}
+/* WEALTH CHART */
+canvas{width:100%!important}
+/* PRINT */
+@media print{.step-nav,.btn-analyze,.result-nav,.preset-bar{display:none}#results{display:block!important}}
+.footnote{text-align:center;margin-top:36px;font-size:12px;color:var(--text-light);line-height:1.6;border-top:1px solid var(--border);padding-top:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">r/RupeeStories · Free Tool</div>
+  <h1>Where Should <em>I Live?</em></h1>
+  <p>A comprehensive NRI Life Calculator. Compare 11 locations on income, lifestyle equivalence, hidden costs, quality of life, risk, and wealth trajectory — weighted by your priorities.</p>
+  <div class="hero-chips">
+    <span class="hero-chip">Lifestyle Equivalence Engine</span>
+    <span class="hero-chip">Hidden Tax Module</span>
+    <span class="hero-chip">AQI & Convenience Scores</span>
+    <span class="hero-chip">Upgrade / Downgrade / Sideways</span>
+    <span class="hero-chip">FIRE Timeline</span>
+    <span class="hero-chip">India Remote Work</span>
+    <span class="hero-chip">RNOR Window</span>
+    <span class="hero-chip">Migration Sentiment Score</span>
+  </div>
+</div>
+
+<div class="preset-bar">
+  <span class="preset-label">Archetypes:</span>
+  <button class="preset-btn" onclick="loadPreset('young_it')">👨‍💻 Young IT (H-1B)</button>
+  <button class="preset-btn" onclick="loadPreset('mid_family')">👨‍👩‍👧 Mid-Career Family</button>
+  <button class="preset-btn" onclick="loadPreset('gc_stable')">✅ GC / Settled</button>
+  <button class="preset-btn" onclick="loadPreset('return_india')">✈️ Planning Return</button>
+  <button class="preset-btn" onclick="loadPreset('remote_worker')">🌏 Remote Worker</button>
+  <button class="preset-btn" onclick="loadPreset('pre_fire')">🔥 Pre-FIRE</button>
+</div>
+
+<nav class="step-nav">
+  <button class="step-btn active" onclick="switchStep(0)"><span class="step-num">1</span>Profile</button>
+  <button class="step-btn" onclick="switchStep(1)"><span class="step-num">2</span>Lifestyle</button>
+  <button class="step-btn" onclick="switchStep(2)"><span class="step-num">3</span>Countries</button>
+  <button class="step-btn" onclick="switchStep(3)"><span class="step-num">4</span>Scenarios</button>
+</nav>
+
+<div class="wrapper">
+
+<!-- ═══ STEP 1: PROFILE ══════════════════════════════════════════ -->
+<div class="step-pane active" id="step0">
+  <div class="section-grid">
+    <div class="card">
+      <div class="sec-hdr"><div class="sec-icon">💰</div><div><h3>Income & Wealth</h3><p>Your current financial snapshot</p></div></div>
+      <div class="field"><label>Annual Gross Income (USD) <span class="tip">Convert if non-USD</span></label>
+        <div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="income" value="180000"></div>
+        <div class="hint">₹1Cr ≈ $120k · £100k ≈ $125k · AED 600k ≈ $163k · SGD 200k ≈ $148k · AUD 200k ≈ $130k</div></div>
+      <div class="field"><label>Total Net Worth / Savings (USD)</label>
+        <div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="networth" value="300000"></div>
+        <div class="hint">Liquid savings + investments. Exclude primary home equity and locked retirement accounts.</div></div>
+      <div class="field-row">
+        <div class="field"><label>Monthly Savings (USD) <span class="tip">For cross-check</span></label>
+          <div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="monthly_savings" value="4000"></div>
+          <div class="hint">What you actually save. Used to cross-check the model — if it differs significantly, a note will appear in results.</div></div>
+        <div class="field"><label>Monthly India Remittance</label>
+          <div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="remittance" value="400"></div>
+          <div class="hint">To parents / family in India</div></div>
+      </div>
+      <div class="field"><label>Work Arrangement</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="work" value="employed" checked><span>Local employer</span></label>
+          <label class="radio-option"><input type="radio" name="work" value="remote"><span>Remote (USD/GBP)</span></label>
+          <label class="radio-option"><input type="radio" name="work" value="fire"><span>FIRE / Retired</span></label>
+          <label class="radio-option"><input type="radio" name="work" value="business"><span>Own business</span></label>
+        </div>
+        <div class="hint">Remote workers can keep high-income while living anywhere — this changes the comparison dramatically.</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-hdr"><div class="sec-icon">🏠</div><div><h3>Your Situation</h3><p>Where you are and who you're planning for</p></div></div>
+      <div class="field"><label>Current Country / City Type</label>
+        <select id="current_country">
+          <option value="usa_hcol">USA — HCOL (SF/NYC/Seattle)</option>
+          <option value="usa_mcol" selected>USA — MCOL (Austin/Denver/Chicago)</option>
+          <option value="uk">United Kingdom (London area)</option>
+          <option value="uae">UAE (Dubai / Abu Dhabi)</option>
+          <option value="singapore">Singapore</option>
+          <option value="australia">Australia (Sydney/Melbourne)</option>
+          <option value="germany">Germany (Berlin/Munich)</option>
+          <option value="portugal">Portugal (Lisbon/Porto)</option>
+          <option value="india_metro">India — Metro (Bangalore/Mumbai/Hyderabad)</option>
+          <option value="india_t2">India — Tier 2 (Pune/Kochi/Chennai)</option>
+          <option value="india_small">India — Small City / Hometown</option>
+        </select></div>
+      <div class="field"><label>Immigration Status</label>
+        <select id="visa_status">
+          <option value="citizen">US/Local Citizen</option>
+          <option value="gc">Green Card (GC)</option>
+          <option value="h1b" selected>H-1B (Employer sponsored)</option>
+          <option value="gc_pending">GC Pending</option>
+          <option value="l1">L-1 / L-2</option>
+          <option value="pr_other">PR in current country</option>
+          <option value="oci">OCI / Indian Citizen</option>
+        </select></div>
+      <div class="field"><label>Family Size</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="family" value="1"><span>Single</span></label>
+          <label class="radio-option"><input type="radio" name="family" value="2"><span>Couple</span></label>
+          <label class="radio-option"><input type="radio" name="family" value="3" checked><span>Family · 1 child</span></label>
+          <label class="radio-option"><input type="radio" name="family" value="4"><span>Family · 2+ kids</span></label>
+        </div></div>
+      <div class="field-row">
+        <div class="field"><label>Your Age</label><input type="number" id="age" value="36" min="22" max="65"></div>
+        <div class="field"><label>Target Retirement Age</label><input type="number" id="retire_age" value="55" min="40" max="75"></div>
+      </div>
+      <div class="field"><label>Time Horizon <span class="tip">For projections</span></label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="horizon" value="5"><span>5 years</span></label>
+          <label class="radio-option"><input type="radio" name="horizon" value="10" checked><span>10 years</span></label>
+          <label class="radio-option"><input type="radio" name="horizon" value="20"><span>20 years</span></label>
+        </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 2: LIFESTYLE ════════════════════════════════════════ -->
+<div class="step-pane" id="step1">
+  <div class="section-grid">
+    <div class="card">
+      <div class="sec-hdr"><div class="sec-icon">🎯</div><div><h3>Target Lifestyle</h3><p>What standard of living do you want in the new location?</p></div></div>
+      <div class="field"><label>Desired Lifestyle Tier</label>
+        <div class="radio-group" style="flex-direction:column;gap:10px">
+          <label class="radio-option"><input type="radio" name="desired_tier" value="1"><span><strong>Basic</strong> — Stable and modest. Decent area, home cooking, occasional dining out. No domestic help. 1 vacation/year.</span></label>
+          <label class="radio-option"><input type="radio" name="desired_tier" value="2" checked><span><strong>Comfortable</strong> — Good neighborhood, regular dining, car, decent school, 2 vacations/year, part-time help in India.</span></label>
+          <label class="radio-option"><input type="radio" name="desired_tier" value="3"><span><strong>Premium</strong> — Nice neighborhood, private school, full domestic help, good car, business class within region, 3+ vacations.</span></label>
+          <label class="radio-option"><input type="radio" name="desired_tier" value="4"><span><strong>Luxury</strong> — Top private school, full household staff, premium healthcare, international business class, large premium home.</span></label>
+        </div></div>
+      <div class="field" style="margin-top:16px"><label>School Preference (If children)</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="school_pref" value="public" checked><span>Public / State school fine</span></label>
+          <label class="radio-option"><input type="radio" name="school_pref" value="private"><span>Private school needed</span></label>
+          <label class="radio-option"><input type="radio" name="school_pref" value="intl"><span>International school</span></label>
+        </div></div>
+      <div class="field"><label>Healthcare Preference</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="health_pref" value="public" checked><span>Public system fine</span></label>
+          <label class="radio-option"><input type="radio" name="health_pref" value="private"><span>Private preferred</span></label>
+          <label class="radio-option"><input type="radio" name="health_pref" value="premium"><span>Premium private essential</span></label>
+        </div></div>
+    </div>
+    <div class="card">
+      <div class="sec-hdr"><div class="sec-icon">⚖️</div><div><h3>What Matters Most?</h3><p>Weights shape your personalised country ranking</p></div></div>
+      <div class="priority-grid">
+        <div class="priority-row"><label>💰 Financial Growth</label><div class="slider-field"><input type="range" id="w_finance" min="1" max="10" value="8" oninput="updatePW(this,'pw_finance')"></div><span class="priority-num" id="pw_finance">8</span></div>
+        <div class="priority-row"><label>👨‍👩‍👧 Family Proximity</label><div class="slider-field"><input type="range" id="w_family" min="1" max="10" value="7" oninput="updatePW(this,'pw_family')"></div><span class="priority-num" id="pw_family">7</span></div>
+        <div class="priority-row"><label>🏥 Healthcare Quality</label><div class="slider-field"><input type="range" id="w_health" min="1" max="10" value="7" oninput="updatePW(this,'pw_health')"></div><span class="priority-num" id="pw_health">7</span></div>
+        <div class="priority-row"><label>🎓 Education (Kids)</label><div class="slider-field"><input type="range" id="w_edu" min="1" max="10" value="7" oninput="updatePW(this,'pw_edu')"></div><span class="priority-num" id="pw_edu">7</span></div>
+        <div class="priority-row"><label>🛡️ Safety / Stability</label><div class="slider-field"><input type="range" id="w_safety" min="1" max="10" value="7" oninput="updatePW(this,'pw_safety')"></div><span class="priority-num" id="pw_safety">7</span></div>
+        <div class="priority-row"><label>⚖️ Work-Life Balance</label><div class="slider-field"><input type="range" id="w_wlb" min="1" max="10" value="6" oninput="updatePW(this,'pw_wlb')"></div><span class="priority-num" id="pw_wlb">6</span></div>
+        <div class="priority-row"><label>🌏 Indian Community</label><div class="slider-field"><input type="range" id="w_community" min="1" max="10" value="7" oninput="updatePW(this,'pw_community')"></div><span class="priority-num" id="pw_community">7</span></div>
+        <div class="priority-row"><label>🌬️ Air Quality / Climate</label><div class="slider-field"><input type="range" id="w_aqi" min="1" max="10" value="5" oninput="updatePW(this,'pw_aqi')"></div><span class="priority-num" id="pw_aqi">5</span></div>
+        <div class="priority-row"><label>🧹 Domestic Convenience</label><div class="slider-field"><input type="range" id="w_convenience" min="1" max="10" value="6" oninput="updatePW(this,'pw_convenience')"></div><span class="priority-num" id="pw_convenience">6</span></div>
+        <div class="priority-row"><label>🛂 Visa Security</label><div class="slider-field"><input type="range" id="w_visa" min="1" max="10" value="8" oninput="updatePW(this,'pw_visa')"></div><span class="priority-num" id="pw_visa">8</span></div>
+      </div>
+    </div>
+    <div class="card card-full">
+      <div class="sec-hdr"><div class="sec-icon">📊</div><div><h3>Financial Assumptions</h3><p>For FIRE and wealth trajectory</p></div></div>
+      <div class="section-grid" style="margin-top:0">
+        <div class="field"><label>Expected Investment Return</label><div class="slider-val" id="ret_val">7%</div><div class="slider-field"><input type="range" id="inv_return" min="3" max="12" step="0.5" value="7" oninput="updateSld(this,'ret_val','%')"></div><div class="hint">S&P 500 historical ~7% real. Conservative: 5%.</div></div>
+        <div class="field"><label>Annual India Trips Budget</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="india_trips" value="4000"></div><div class="hint">From US/Europe: $4-6k. UAE/SG: $2k. Already in India: $0.</div></div>
+        <div class="field"><label>Expected Future Income Growth</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="income_growth" value="flat"><span>Flat (FIRE mode)</span></label>
+            <label class="radio-option"><input type="radio" name="income_growth" value="modest" checked><span>+5%/yr</span></label>
+            <label class="radio-option"><input type="radio" name="income_growth" value="strong"><span>+10%/yr</span></label>
+          </div></div>
+        <div class="field"><label>Risk Tolerance</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="risk_tol" value="low"><span>Conservative</span></label>
+            <label class="radio-option"><input type="radio" name="risk_tol" value="med" checked><span>Moderate</span></label>
+            <label class="radio-option"><input type="radio" name="risk_tol" value="high"><span>Aggressive</span></label>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 3: COUNTRIES ════════════════════════════════════════ -->
+<div class="step-pane" id="step2">
+  <div class="card">
+    <div class="sec-hdr"><div class="sec-icon">🗺️</div><div><h3>Select Locations to Compare</h3><p>Pick 2–6. Your current location is always included.</p></div></div>
+    <div class="country-grid">
+      <label class="country-card"><input type="checkbox" name="countries" value="usa_hcol"><div class="cc-inner"><div class="cc-flag">🇺🇸</div><div class="cc-name">USA · HCOL</div><div class="cc-sub">SF, NYC, Seattle</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="usa_mcol" checked><div class="cc-inner"><div class="cc-flag">🇺🇸</div><div class="cc-name">USA · MCOL</div><div class="cc-sub">Austin, Denver, Atlanta</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="india_metro" checked><div class="cc-inner"><div class="cc-flag">🇮🇳</div><div class="cc-name">India · Metro</div><div class="cc-sub">Bangalore, Mumbai, Hyderabad</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="india_t2" checked><div class="cc-inner"><div class="cc-flag">🇮🇳</div><div class="cc-name">India · Tier 2</div><div class="cc-sub">Pune, Chennai, Kochi</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="india_small"><div class="cc-inner"><div class="cc-flag">🇮🇳</div><div class="cc-name">India · Small City</div><div class="cc-sub">Hometown / Tier 2+</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="uk"><div class="cc-inner"><div class="cc-flag">🇬🇧</div><div class="cc-name">United Kingdom</div><div class="cc-sub">London weighted</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="uae" checked><div class="cc-inner"><div class="cc-flag">🇦🇪</div><div class="cc-name">UAE · Dubai</div><div class="cc-sub">Dubai & Abu Dhabi</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="singapore"><div class="cc-inner"><div class="cc-flag">🇸🇬</div><div class="cc-name">Singapore</div><div class="cc-sub">City-state</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="australia"><div class="cc-inner"><div class="cc-flag">🇦🇺</div><div class="cc-name">Australia</div><div class="cc-sub">Sydney, Melbourne</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="germany"><div class="cc-inner"><div class="cc-flag">🇩🇪</div><div class="cc-name">Germany</div><div class="cc-sub">Berlin, Munich, Frankfurt</div></div></label>
+      <label class="country-card"><input type="checkbox" name="countries" value="portugal"><div class="cc-inner"><div class="cc-flag">🇵🇹</div><div class="cc-name">Portugal</div><div class="cc-sub">Lisbon, Porto, Algarve</div></div></label>
+    </div>
+    <p class="hint" style="text-align:center;margin-top:12px">For India Remote Work scenario: select India Metro or Tier 2 + enable it in Scenarios tab.</p>
+    <p id="selection-error" style="text-align:center;color:var(--red);font-size:13px;font-weight:600;margin-top:8px"></p>
+  </div>
+</div>
+
+<!-- ═══ STEP 4: SCENARIOS ════════════════════════════════════════ -->
+<div class="step-pane" id="step3">
+  <div class="card">
+    <div class="sec-hdr"><div class="sec-icon">🔭</div><div><h3>Stress Test Scenarios</h3><p>Optional. Shows how each location handles these life events.</p></div></div>
+    <div class="section-grid">
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_remote" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">🏠 India Remote Work</strong><p class="hint" style="margin-top:3px">Keep USD income, India lifestyle costs. Models RNOR window benefit. The game-changer scenario.</p></div></label></div>
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_return" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">✈️ Return on Local Salary</strong><p class="hint" style="margin-top:3px">Model India local salary (~40% of US income). Honest view of what local return looks like financially.</p></div></label></div>
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_jobloss" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">📉 Job Loss (6 Months)</strong><p class="hint" style="margin-top:3px">Zero income for 6 months. Which location gives you the most runway?</p></div></label></div>
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_single" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">💍 Single Income (Spouse Stops)</strong><p class="hint" style="margin-top:3px">50% income drop. Which locations stay viable?</p></div></label></div>
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_health" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">🏥 Health Emergency ($50k)</strong><p class="hint" style="margin-top:3px">Reveals how healthcare systems change actual out-of-pocket costs.</p></div></label></div>
+      <div class="card" style="padding:15px"><label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" id="scen_currency" style="width:17px;height:17px;margin-top:2px;flex-shrink:0"><div><strong style="font-size:13px;color:var(--navy)">💱 Currency Shock (INR−20%)</strong><p class="hint" style="margin-top:3px">USD strengthens vs INR. Tests currency risk for mixed-currency situations.</p></div></label></div>
+    </div>
+  </div>
+</div>
+
+<div class="analyze-wrap"><button class="btn-analyze" onclick="runComparison()">⚡ Compare My Options</button></div>
+<!-- ═══ RESULTS ══════════════════════════════════════════════════ -->
+<div id="results">
+  <div class="result-nav">
+    <a href="#r-picks">Top Picks</a>
+    <a href="#r-equiv">Lifestyle Equiv.</a>
+    <a href="#r-table">Snapshot</a>
+    <a href="#r-qol">QoL Scores</a>
+    <a href="#r-hidden">Hidden Costs</a>
+    <a href="#r-wealth">Wealth Chart</a>
+    <a href="#r-best">Best For</a>
+    <a href="#r-scenarios">Scenarios</a>
+    <a href="#r-flags">NRI Flags</a>
+    <a href="#r-choose">Verdict</a>
+  </div>
+
+  <div id="r-picks"></div>
+  <!-- Issue #17: Compact summary above full report -->
+  <div id="r-summary" style="margin-bottom:16px"></div>
+
+  <div class="section-grid" style="margin-top:16px">
+
+    <!-- LIFESTYLE EQUIVALENCE -->
+    <div class="card card-full" id="r-equiv">
+      <div class="sec-hdr"><div class="sec-icon">🔄</div><div>
+        <h3>Lifestyle Equivalence Calculator</h3>
+        <p>To match your current lifestyle in each location — here's the income required and whether you're above or below that threshold</p>
+      </div></div>
+      <div class="equiv-grid" id="equiv-grid"></div>
+    </div>
+
+    <!-- SNAPSHOT TABLE -->
+    <div class="card card-full" id="r-table">
+      <div class="sec-hdr"><div class="sec-icon">📊</div><div><h3>Monthly Financial Snapshot</h3><p>Post-tax income, costs, savings, FIRE timeline, and direction vs today</p></div></div>
+      <div style="overflow-x:auto"><table class="metrics-table" id="snap-table"></table></div>
+      <p class="hint" style="margin-top:8px;text-align:center">FIRE = years to financial independence at 25× annual expenses · Savings rate compares take-home vs desired lifestyle cost</p>
+    </div>
+
+    <!-- QOL SCORES -->
+    <div class="card card-full" id="r-qol">
+      <div class="sec-hdr"><div class="sec-icon">🌍</div><div><h3>Quality of Life Scores</h3><p>6 dimensions that money doesn't fully capture — scored 1–10 per location</p></div></div>
+      <div class="qol-grid" id="qol-grid"></div>
+      <p class="hint" style="margin-top:10px">AQI score = inverted — lower pollution = higher score. Convenience = availability of domestic help, delivery, services. Sources: WHO AQI data, Numbeo Safety Index, EIU Healthcare Index.</p>
+    </div>
+
+    <!-- HIDDEN COSTS -->
+    <div class="card card-full" id="r-hidden">
+      <div class="sec-hdr"><div class="sec-icon">🔍</div><div>
+        <h3>Hidden Cost Module</h3>
+        <p>What standard calculators miss — the real annual cost of living in each country at your lifestyle tier</p>
+      </div></div>
+      <div class="hc-grid" id="hc-grid"></div>
+    </div>
+
+    <!-- WEALTH TRAJECTORY -->
+    <div class="card card-full" id="r-wealth">
+      <div class="sec-hdr"><div class="sec-icon">📈</div><div><h3>Wealth Trajectory</h3><p>Projected net worth over your time horizon in each location</p></div></div>
+      <canvas id="wealthChart" height="200"></canvas>
+      <div id="wealth-legend" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px;font-size:12px;color:var(--text-mid)"></div>
+      <p class="hint" style="text-align:center;margin-top:6px">Assumes current savings rate per location, investment returns, and no major life events. Remittances and India trips deducted from savings.</p>
+    </div>
+
+    <!-- BEST FOR -->
+    <div class="card card-full" id="r-best">
+      <div class="sec-hdr"><div class="sec-icon">🏆</div><div><h3>Best Location For Each Goal</h3><p>Among your selected locations</p></div></div>
+      <div class="best-grid" id="best-grid"></div>
+    </div>
+
+    <!-- SCENARIOS -->
+    <div class="card card-full" id="r-scenarios" style="display:none">
+      <div class="sec-hdr"><div class="sec-icon">⚡</div><div><h3>Scenario Stress Tests</h3><p>How each location performs under real-life events</p></div></div>
+      <div id="scenario-results"></div>
+    </div>
+
+    <!-- NRI FLAGS -->
+    <div class="card card-full" id="r-flags">
+      <div class="sec-hdr"><div class="sec-icon">🇮🇳</div><div><h3>NRI-Specific Flags</h3><p>Critical considerations most comparison tools miss</p></div></div>
+      <div id="nri-flags"></div>
+    </div>
+
+    <!-- VERDICT / CHOOSE -->
+    <div class="card card-full" id="r-choose">
+      <div class="sec-hdr"><div class="sec-icon">🗺️</div><div><h3>If You Choose Each Location — Know This</h3><p>The paragraph that matters most for your decision</p></div></div>
+      <div id="choose-grid"></div>
+    </div>
+
+  </div>
+  <div style="text-align:center;margin-top:18px"><button onclick="window.print()" style="background:none;border:1.5px solid var(--navy);color:var(--navy);border-radius:999px;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">🖨️ Save as PDF</button></div>
+</div>
+
+<div class="footnote">
+  Built with 💛 for r/RupeeStories &nbsp;·&nbsp; <strong>Not financial advice.</strong> All figures are estimates using simplified effective tax models. Consult a cross-border CPA for your specific situation. &nbsp;·&nbsp;
+  Cost data: Numbeo, Expatistan, Livingcost (2024–25). Tax rates: simplified effective rates. Salary benchmarks: Levels.fyi, Glassdoor.
+</div>
+</div>
+<script>
+// ─── LOCATION DATABASE ───────────────────────────────────────────────────────
+// costs[tier]: [basic,comfortable,premium,luxury] USD/month — BASELINE: family of 3
+// Family multipliers applied at runtime: single 0.65, couple 0.82, family-1 1.00, family-2+ 1.28
+// taxBands: [[income_usd, effective_rate]] piecewise linear
+// qol: {safety,healthcare,aqi,convenience,wlb,education,community} 0-10 — directional estimates, not live data
+// hiddenCosts: per-location items standard calculators miss
+// DATA: Cost baselines from Numbeo/Expatistan/Livingcost (2024-25). Tax: simplified effective rates.
+// Representative cities: see choose text per location. Single-income family of 3 as base.
+const LOC = {
+  usa_hcol:{
+    name:'USA · HCOL', sub:'SF Bay, NYC, Seattle', flag:'🇺🇸',
+    costs:[5500,8800,14000,23000],
+    taxBands:[[0,.14],[80000,.28],[160000,.35],[250000,.41],[400000,.45],[700000,.47]],
+    qol:{safety:7,healthcare:9,aqi:7,convenience:5,wlb:5,education:9,community:6},
+    visaStability:4, pppMult:1.0, indiaTripCost:4800,
+    // school surcharge: private=+$800/mo, intl=+$1400/mo | healthcare: premium=+$500/mo
+    schoolSurcharge:{public:0,private:800,intl:1400},
+    healthSurcharge:{public:0,private:500,premium:1200},
+    hiddenCosts:[
+      {l:'Health Insurance (family)',v:2100},{l:'Deductibles (annual avg)',v:250},
+      {l:'Childcare / after-school',v:1400},{l:'No domestic help',v:0},
+      {l:'Annual India trips (÷12)',v:400},{l:'Car insurance + gas',v:480},
+    ],
+    localSalaryMultiplier:{single:1.0,couple:1.0,family3:1.0,family4:1.0},
+    choose:'HCOL US is the highest ceiling in this comparison. RSUs, 401k match, and $300k+ salaries compound dramatically. The price is visa fragility (H-1B = 60-day clock on job loss) and 12+ hours from India. GC or citizen + $200k+ income = no location builds wealth faster.',
+    flags:[
+      {l:'red',t:'Estate Tax: Non-Citizens',d:'US situs assets face a $60k exemption vs $13M for citizens. On a $500k estate, that\'s potentially $175k in tax. Plan before accumulation scales.'},
+      {l:'red',t:'401k Trap on Return to India',d:'Early 401k withdrawal: 10% penalty + US tax + potential Indian tax. Don\'t touch retirement accounts without a drawdown strategy. Roth conversions first.'},
+      {l:'amber',t:'H-1B Job-Loss Clock',d:'60 days to find new employer, change status, or depart. A $1.2M house and a 60-day visa window are dangerous together. Build a 12-month liquid bridge fund.'},
+      {l:'green',t:'Highest Absolute Wealth Building',d:'Senior tech/finance: $250-400k. RSUs, 401k match, ESPP compound dramatically. No other country here comes close for absolute wealth accumulation.'},
+    ],
+  },
+  usa_mcol:{
+    name:'USA · MCOL', sub:'Austin, Denver, Chicago, Atlanta', flag:'🇺🇸',
+    costs:[3700,5900,9500,16000],
+    taxBands:[[0,.11],[80000,.22],[150000,.29],[250000,.34],[400000,.38],[700000,.41]],
+    qol:{safety:7,healthcare:8,aqi:7,convenience:5,wlb:6,education:8,community:6},
+    visaStability:4, pppMult:1.05, indiaTripCost:4200,
+    schoolSurcharge:{public:0,private:650,intl:1100},
+    healthSurcharge:{public:0,private:400,premium:900},
+    hiddenCosts:[
+      {l:'Health Insurance (family)',v:1700},{l:'Deductibles (annual avg)',v:220},
+      {l:'Childcare / after-school',v:1100},{l:'No domestic help',v:0},
+      {l:'Annual India trips (÷12)',v:350},{l:'Car (2) insurance + gas',v:400},
+    ],
+    choose:'MCOL US is the best savings-rate position in the US. Tech salaries are often 85-95% of HCOL but costs are 35% lower. A MCOL life on a remote FAANG salary is arguably the optimal US financial position. Visa risk is identical to HCOL.',
+    flags:[
+      {l:'green',t:'Best Savings Rate in the US',d:'Similar salary to HCOL (especially remote), 35-40% lower cost. $200k in Austin vs SF saves $2-3k more per month — compounds to $300-400k over 10 years.'},
+      {l:'amber',t:'Same Visa Risk as HCOL',d:'H-1B dependency doesn\'t change with city. Build the same bridge fund regardless of lower MCOL costs.'},
+    ],
+  },
+  india_metro:{
+    name:'India · Metro', sub:'Bangalore, Mumbai, Hyderabad, Delhi', flag:'🇮🇳',
+    costs:[750,1600,3200,7200],
+    taxBands:[[0,.05],[14000,.12],[28000,.18],[55000,.22],[95000,.26],[160000,.28]],
+    qol:{safety:6,healthcare:7,aqi:3,convenience:10,wlb:7,education:8,community:10},
+    visaStability:10, pppMult:3.2, indiaTripCost:0, rnorBenefit:true,
+    schoolSurcharge:{public:0,private:280,intl:900},
+    healthSurcharge:{public:0,private:80,premium:200},
+    hiddenCosts:[
+      {l:'Cook + maid + driver',v:350},{l:'Private school (1 child)',v:280},
+      {l:'Private healthcare (family)',v:80},{l:'Private security / society fees',v:120},
+      {l:'Air purifier + water (AQI)',v:40},{l:'Generator / inverter (power backup)',v:30},
+    ],
+    choose:'India Metro with USD remote income is the most underrated position here. RNOR window (2-3 yrs) = foreign income tax-free on arrival. Domestic help (cook+driver+maid ≈ $350/mo) raises effective quality of life by 1-2 tiers. AQI is the main penalty — Bangalore and Hyderabad are significantly better than Delhi/Mumbai.',
+    flags:[
+      {l:'green',t:'RNOR Window: 2-3 Years Tax-Free',d:'Foreign income during RNOR is typically exempt from Indian tax. Plan return year carefully — this window can save $20-80k depending on income. Confirm with a CA.'},
+      {l:'green',t:'Domestic Help: The Invisible Multiplier',d:'Cook + driver + housekeeping ≈ ₹25-40k/month ($300-480). Your effective lifestyle tier is 1-2 notches above cost numbers. No Western equivalent.'},
+      {l:'amber',t:'India\'s Hidden Private Tax',d:'You pay private rates for what public systems provide in the West: school (₹3-8L/yr), security, water, power backup. Adds ₹8-15k/month.'},
+      {l:'amber',t:'Luxury Premium on Imports',d:'Electronics and luxury cars: 2-3× US price. A $1,200 iPhone costs ₹130k ($1,560). A $40k BMW is ₹55-70L ($66-84k). Budget India prices for Indian goods.'},
+    ],
+  },
+  india_t2:{
+    name:'India · Tier 2', sub:'Pune, Chennai, Kochi, Ahmedabad', flag:'🇮🇳',
+    costs:[520,1100,2200,4800],
+    taxBands:[[0,.05],[14000,.12],[28000,.18],[55000,.22],[95000,.26],[160000,.28]],
+    qol:{safety:7,healthcare:6,aqi:5,convenience:9,wlb:8,education:7,community:10},
+    visaStability:10, pppMult:3.8, indiaTripCost:0, rnorBenefit:true,
+    schoolSurcharge:{public:0,private:180,intl:600},
+    healthSurcharge:{public:0,private:60,premium:150},
+    hiddenCosts:[
+      {l:'Cook + maid',v:220},{l:'Decent private school',v:180},
+      {l:'Private healthcare',v:60},{l:'Society fees',v:70},
+      {l:'Air purifier (AQI varies)',v:20},{l:'Car + driver',v:180},
+    ],
+    choose:'Tier 2 India is the hidden gem here — especially for remote workers. Pune, Kochi, Chennai offer professional ecosystems, good private schools, Tier 1 hospital access, and 30-40% lower costs than metros. $180k USD income here = $6-8k/month savings rate. Faster FIRE than staying in the US.',
+    flags:[
+      {l:'green',t:'Best Cost-Quality Ratio in India',d:'Lower costs, growing professional infrastructure. Kochi and Pune have strong returning-NRI communities.'},
+      {l:'amber',t:'Narrower Local Career Market',d:'Premium roles are metro-concentrated. Best for remote workers, consultants, entrepreneurs.'},
+    ],
+  },
+  india_small:{
+    name:'India · Small City', sub:'Hometown / Tier 2+ / Coastal', flag:'🇮🇳',
+    costs:[380,750,1500,3200],
+    taxBands:[[0,.05],[14000,.12],[28000,.18],[55000,.22],[95000,.26],[160000,.28]],
+    qol:{safety:8,healthcare:5,aqi:6,convenience:9,wlb:9,education:6,community:10},
+    visaStability:10, pppMult:4.5, indiaTripCost:0, rnorBenefit:true,
+    schoolSurcharge:{public:0,private:80,intl:300},
+    healthSurcharge:{public:0,private:50,premium:100},
+    hiddenCosts:[
+      {l:'Full domestic help',v:150},{l:'Local private school',v:80},
+      {l:'Healthcare (travel to city)',v:100},{l:'Society / utilities',v:50},
+      {l:'Car + maintenance',v:120},{l:'Emergency health fund',v:80},
+    ],
+    choose:'Small-city India is the FIRE destination, not the career destination. $750/month = comfortable family life. At 7% real returns on $800k, you draw $4,666/month — 6× what you need. Tradeoff: healthcare requires planning (travel to Tier 1 for serious conditions).',
+    flags:[
+      {l:'green',t:'Lowest Cost + Maximum Family',d:'Parents nearby, zero remittance, lowest lifestyle cost in comparison. The pure FIRE destination.'},
+      {l:'amber',t:'Healthcare Planning Non-Negotiable',d:'Build a ₹50L+ health emergency fund OR premium insurance before settling. Serious conditions need Tier 1 cities.'},
+    ],
+  },
+  uk:{
+    name:'United Kingdom', sub:'London weighted average', flag:'🇬🇧',
+    costs:[4400,7100,11500,19500],
+    taxBands:[[0,.20],[30000,.32],[75000,.43],[125000,.49],[180000,.52],[500000,.52]],
+    qol:{safety:7,healthcare:8,aqi:7,convenience:6,wlb:7,education:9,community:8},
+    visaStability:6, pppMult:1.0, indiaTripCost:3500,
+    schoolSurcharge:{public:0,private:900,intl:1600},
+    healthSurcharge:{public:0,private:230,premium:500},
+    hiddenCosts:[
+      {l:'Private school top-up (optional)',v:400},{l:'NHS + private top-up insurance',v:230},
+      {l:'Transport / car',v:380},{l:'UK pension gap (vs US 401k)',v:120},
+      {l:'Annual India trips (÷12)',v:290},{l:'No meaningful domestic help',v:0},
+    ],
+    choose:'UK is the best European-culture option for NRIs who value Indian community, NHS healthcare, and a clear path to permanent residency. The 40-52% effective tax at senior levels is the price — at $200k, UK take-home is $30-40k less than UAE annually.',
+    flags:[
+      {l:'green',t:'NHS: Real Healthcare Cost Savings',d:'Free at point of use. Private top-up: £150-350/month vs $1,500-2,000/month in the US. A genuine $15-20k/year advantage.'},
+      {l:'green',t:'Strong Indian Community',d:'One of the world\'s oldest established Indian communities. Professional networks, temples, events, authentic regional food.'},
+      {l:'amber',t:'Tax Drag on Wealth Building',d:'On $250k gross, UK nets ~$130k. UAE nets ~$245k. $115k/year difference = $1M+ wealth gap over 10 years.'},
+      {l:'amber',t:'Post-Brexit Skilled Worker Visa',d:'Requires job offer + £38,700+ salary. ILR after 5 years. More process-intensive but more predictable than H-1B.'},
+    ],
+  },
+  uae:{
+    name:'UAE · Dubai', sub:'Dubai & Abu Dhabi', flag:'🇦🇪',
+    costs:[4200,6800,11000,19000],
+    taxBands:[[0,0.00]],
+    qol:{safety:8,healthcare:7,aqi:6,convenience:8,wlb:6,education:8,community:9},
+    visaStability:4, pppMult:0.95, indiaTripCost:1800,
+    schoolSurcharge:{public:0,private:700,intl:1400},
+    healthSurcharge:{public:0,private:420,premium:800},
+    hiddenCosts:[
+      {l:'School fees (premium)',v:700},{l:'Private health insurance',v:420},
+      {l:'Visa renewals + fees',v:100},{l:'Knowledge / municipality fees',v:80},
+      {l:'No unemployment insurance',v:0},{l:'Annual India trips (÷12)',v:150},
+    ],
+    choose:'UAE is the optimal wealth-accumulation station for 5-8 years. 0% tax on $200k = $85k/year more than UK, $40k more than Singapore. Do UAE for 8 years, accumulate aggressively, then choose your permanent home from financial strength. Tradeoff: no citizenship path, employment-tied residency. Plan your exit before you arrive.',
+    flags:[
+      {l:'green',t:'Zero Income Tax: The Math Is Undeniable',d:'$200k in UAE: $197k net. $200k in UK: ~$110k net. $200k in Germany: ~$100k net. $87-97k annual difference = $1M+ over 10 years.'},
+      {l:'red',t:'No Citizenship, No Safety Net',d:'No path to citizenship for most NRIs. Residency is employment-tied (unless Golden Visa: $550k investment). No unemployment insurance. No state pension.'},
+      {l:'green',t:'Largest NRI Community Globally',d:'3.5M+ Indians. Exceptional Indian food, temples, NRI-specific financial services, direct flights to every Indian city.'},
+      {l:'amber',t:'Hidden Fees: The UAE Tax',d:'Knowledge fees, municipality fees, school registration, visa costs — budget $1,500-2,000/year in administrative costs.'},
+    ],
+  },
+  singapore:{
+    name:'Singapore', sub:'City-state', flag:'🇸🇬',
+    costs:[5000,8100,13000,22000],
+    taxBands:[[0,.04],[40000,.10],[90000,.16],[180000,.20],[360000,.22],[1000000,.22]],
+    qol:{safety:10,healthcare:9,aqi:8,convenience:8,wlb:6,education:10,community:7},
+    visaStability:6, pppMult:0.88, indiaTripCost:1700,
+    schoolSurcharge:{public:0,private:800,intl:1600},
+    healthSurcharge:{public:0,private:380,premium:750},
+    hiddenCosts:[
+      {l:'Housing (major outlier)',v:3200},{l:'Car COE (if needed)',v:1200},
+      {l:'International school',v:800},{l:'Healthcare (Medisave + private)',v:380},
+      {l:'Annual India trips (÷12)',v:140},{l:'Misc service costs',v:120},
+    ],
+    choose:'Singapore is the best choice if children\'s education and safety are absolute top priorities and you can sustain $200k+ income. World-class everything. Caveat: housing is extreme (SGD 5-9k/month for 3BR), COE for a car costs more than most Indian apartments, PR/citizenship increasingly difficult.',
+    flags:[
+      {l:'green',t:'#1 for Kids: Safety + Education',d:'Education top-3 globally. Safety 10/10. Healthcare world-class. If you have school-age children and can sustain $200k+ income, Singapore is the best place in Asia to raise them.'},
+      {l:'amber',t:'Housing: The Silent Budget Killer',d:'Private condo 3BR: SGD 5,000-9,000/month. Non-PR Buyer\'s Stamp Duty: 60%. Housing alone can consume 35-50% of gross income.'},
+      {l:'amber',t:'PR and Citizenship Getting Harder',d:'PR approval rates declined significantly 2022-24. Citizenship is very rare. Plan a 7-10 year horizon with a clear next step.'},
+    ],
+  },
+  australia:{
+    name:'Australia', sub:'Sydney & Melbourne', flag:'🇦🇺',
+    costs:[4400,6900,11000,18500],
+    taxBands:[[0,.19],[37000,.28],[90000,.37],[120000,.42],[180000,.46],[500000,.47]],
+    qol:{safety:8,healthcare:8,aqi:9,convenience:6,wlb:9,education:9,community:7},
+    visaStability:8, pppMult:0.92, indiaTripCost:3300,
+    schoolSurcharge:{public:0,private:500,intl:1000},
+    healthSurcharge:{public:0,private:180,premium:400},
+    hiddenCosts:[
+      {l:'Superannuation benefit (−11%)',v:-200},{l:'Medicare levy (2%)',v:160},
+      {l:'Private school / childcare',v:500},{l:'No domestic help (DIY culture)',v:0},
+      {l:'Annual India trips (÷12)',v:275},{l:'Car + insurance',v:380},
+    ],
+    choose:'Australia is the most balanced long-term destination for NRIs wanting Western lifestyle, a clear citizenship path, and genuine work-life balance. Not optimized for financial speed — but superannuation (11% employer), Medicare, and the safety net are genuinely good.',
+    flags:[
+      {l:'green',t:'Best Work-Life Balance in the West',d:'38-hour work week legally protected. 4 weeks minimum leave. Outdoor culture. Qualitative life quality is genuinely high.'},
+      {l:'green',t:'Clear Citizenship Path',d:'PR → Citizenship in ~4 years. Most transparent trajectory among non-India options.'},
+      {l:'amber',t:'Distance Tax from India',d:'12-18 hour flight. Family of 3 India trip: AUD 8-15k. Budget AUD 12-20k/year for family ties. This is a real hidden cost.'},
+    ],
+  },
+  germany:{
+    name:'Germany', sub:'Berlin, Munich, Frankfurt', flag:'🇩🇪',
+    costs:[3500,5500,8800,15000],
+    taxBands:[[0,.25],[45000,.35],[85000,.42],[130000,.46],[250000,.49],[500000,.50]],
+    qol:{safety:8,healthcare:9,aqi:8,convenience:6,wlb:9,education:8,community:5},
+    visaStability:7, pppMult:0.95, indiaTripCost:3100,
+    schoolSurcharge:{public:0,private:400,intl:900},
+    healthSurcharge:{public:0,private:270,premium:500},
+    hiddenCosts:[
+      {l:'Statutory healthcare (KV)',v:270},{l:'Social insurance contributions',v:380},
+      {l:'Church tax (if opted in)',v:0},{l:'Language lessons',v:100},
+      {l:'No domestic help culture',v:0},{l:'Annual India trips (÷12)',v:260},
+    ],
+    choose:'Germany is best for NRIs who prioritize social safety net, EU mobility, and long-term stability over financial optimization. Tax (35-50%) is significant but the security is genuine: unemployment insurance, GKV, state pension, free university.',
+    flags:[
+      {l:'green',t:'EU Mobility: 27 Countries',d:'German permanent residency = work/live rights across the EU. Unmatched geographical optionality from a single status.'},
+      {l:'green',t:'Best Social Safety Net',d:'60% income unemployment for 12+ months. GKV. State pension. Free university. Germany cushions the fall better than any other country here.'},
+      {l:'amber',t:'Language + Integration Barrier',d:'Professional advancement typically requires German. Integration takes 3-5 years. Indian community: ~300k vs UK\'s 1.8M.'},
+      {l:'amber',t:'Highest Effective Tax Burden',d:'Effective marginal rate at €100k+: 47-52% including all social contributions. Wealth accumulation is slowest among all options here.'},
+    ],
+  },
+  portugal:{
+    name:'Portugal', sub:'Lisbon, Porto, Algarve', flag:'🇵🇹',
+    costs:[2500,4000,6500,11000],
+    taxBands:[[0,.15],[25000,.28],[55000,.38],[85000,.44],[175000,.48],[500000,.48]],
+    qol:{safety:9,healthcare:7,aqi:9,convenience:7,wlb:9,education:7,community:4},
+    visaStability:7, pppMult:1.1, indiaTripCost:3200, nhrBenefit:true,
+    schoolSurcharge:{public:0,private:200,intl:700},
+    healthSurcharge:{public:0,private:50,premium:180},
+    hiddenCosts:[
+      {l:'SNS (public health, optional)',v:50},{l:'NHR tax admin / CPA',v:60},
+      {l:'Local school vs intl school',v:200},{l:'No domestic help culture',v:0},
+      {l:'Annual India trips (÷12)',v:267},{l:'Car + insurance',v:250},
+    ],
+    choose:'Portugal is the standout choice for USD-income NRIs wanting European lifestyle at dramatically lower cost. NHR/IFICI offers 20% flat rate for 10 years. Lisbon comfortable family life: $4,000/month vs $7,100 in London. Indian community is small — weight this if Indian food and culture matter.',
+    flags:[
+      {l:'green',t:'NHR/IFICI: 20% Flat Rate for 10 Years',d:'20% flat income tax for qualifying new residents for 10 years. Rules evolved in 2024 — confirm with a Portuguese tax advisor.'},
+      {l:'green',t:'D7 / Digital Nomad Visa',d:'D8 visa for remote workers with foreign income above €760/month. Clear EU residency pathway for USD-income NRIs.'},
+      {l:'amber',t:'Small Indian Community',d:'~10,000 Indians in Portugal. Limited Indian food outside Lisbon. Genuine tradeoff vs UK, UAE, or Singapore.'},
+      {l:'amber',t:'Local Career Market Very Limited',d:'Portugal works as a remote-work financial base. Local senior roles are very thin. This is a lifestyle + financial optimization play, not a career play.'},
+    ],
+  },
+};
+
+// ─── UTILITIES ────────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const val=id=>parseFloat($(id).value)||0;
+const radioVal=name=>{const el=document.querySelector(`input[name="${name}"]:checked`);return el?el.value:''};
+const fmtD=n=>'$'+Math.round(n).toLocaleString();
+const fmtK=n=>'$'+Math.round(Math.abs(n)/1000)+'k';
+const fmtPct=n=>(n*100).toFixed(0)+'%';
+const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
+const CHART_COLORS=['#151739','#D7AE43','#2E7D52','#C0392B','#1A5F9E','#B7620A','#6B3FA0','#2C7873','#C06014','#4A7C59'];
+const TIERS=['Basic','Comfortable','Premium','Luxury'];
+
+// ─── FAMILY MULTIPLIERS ───────────────────────────────────────────────────────
+// Issue #2: scale costs by family size
+const FAMILY_MULT={'1':0.65,'2':0.82,'3':1.00,'4':1.28};
+function familyMult(familyVal){ return FAMILY_MULT[familyVal]||1.00; }
+
+// ─── TAX ENGINE ───────────────────────────────────────────────────────────────
+function effectiveRate(income,bands){
+  if(!income||income<=0)return 0;
+  for(let i=0;i<bands.length-1;i++){
+    const[lo,rLo]=bands[i],[hi,rHi]=bands[i+1];
+    if(income<=hi){const t=(income-lo)/(hi-lo);return rLo+t*(rHi-rLo);}
+  }
+  return bands[bands.length-1][1];
+}
+function monthlyNet(locId,annualUSD){
+  const loc=LOC[locId];
+  const rate=effectiveRate(annualUSD,loc.taxBands);
+  return(annualUSD*(1-rate))/12;
+}
+
+// ─── FINANCIAL ENGINE ─────────────────────────────────────────────────────────
+// Issue #2,3: apply family + school + healthcare surcharges to tier cost
+function getTierCost(locId,tier,inputs){
+  const loc=LOC[locId];
+  const base=loc.costs[clamp(tier,0,3)];
+  const fm=familyMult(inputs.familySize||'3');
+  const school=(loc.schoolSurcharge||{})[inputs.schoolPref||'public']||0;
+  const health=(loc.healthSurcharge||{})[inputs.healthPref||'public']||0;
+  return Math.round(base*fm + school + health);
+}
+
+function minIncomeForTier(locId,tier,inputs,savePct=0.20){
+  const target=getTierCost(locId,tier,inputs)/(1-savePct)*12;
+  let lo=target,hi=target*5;
+  for(let i=0;i<60;i++){const m=(lo+hi)/2;const n=m*(1-effectiveRate(m,LOC[locId].taxBands));if(n<target)lo=m;else hi=m;}
+  return Math.round((lo+hi)/2);
+}
+
+// Issue #12: wire in income_growth to wealth trajectory
+function fireYears(monthlyNetInc,monthlyCost,savings,rtn){
+  const annSave=(monthlyNetInc-monthlyCost)*12;
+  if(annSave<=0)return null;
+  const target=monthlyCost*12*25;
+  let bal=savings;
+  for(let y=0;y<=50;y++){if(bal>=target)return y;bal=bal*(1+rtn)+annSave;}
+  return null;
+}
+
+function netWorthTrajectory(monthlyNetInc,monthlyCost,savings,rtn,years,incomeGrowth){
+  const arr=[savings];
+  let bal=savings, currentNetMo=monthlyNetInc;
+  for(let y=1;y<=years;y++){
+    currentNetMo *= (1+incomeGrowth); // Issue #12: apply income growth each year
+    const annSave=Math.max(0,(currentNetMo-monthlyCost)*12);
+    bal=bal*(1+rtn)+annSave;
+    arr.push(Math.round(bal));
+  }
+  return arr;
+}
+
+// ─── EQUIVALENCE ENGINE ───────────────────────────────────────────────────────
+// Issue #8: show min needed clearly; note it assumes same gross income (valid for remote, approximate for employed)
+function lifestyleEquivalence(currentLocId,targetLocId,currentIncome,desiredTier,inputs){
+  const curNet=monthlyNet(currentLocId,currentIncome);
+  const curCost=getTierCost(currentLocId,desiredTier,inputs);
+  const curSavingsRate=curNet>0?(curNet-curCost)/curNet:0;
+  const tgtMinIncome=minIncomeForTier(targetLocId,desiredTier,inputs,Math.max(0.10,curSavingsRate));
+  const tgtActualNet=monthlyNet(targetLocId,currentIncome); // note: same gross — valid for remote
+  const tgtCost=getTierCost(targetLocId,desiredTier,inputs);
+  const tgtSavings=tgtActualNet-tgtCost;
+  const gapPct=(currentIncome-tgtMinIncome)/tgtMinIncome;
+  let direction='same';
+  if(gapPct>0.15)direction='up';
+  else if(gapPct<-0.15)direction='down';
+  return{minIncome:tgtMinIncome,actualNet:tgtActualNet,tgtCost,tgtSavings,gapPct,direction};
+}
+
+// ─── SCORING ENGINE ───────────────────────────────────────────────────────────
+function scoreLocation(locId,inputs){
+  const loc=LOC[locId];
+  // Issue #7: remote work keeps original income regardless of location
+  const isRemote=inputs.work==='remote';
+  const isFire=inputs.work==='fire';
+  let effectiveIncome;
+  if(isFire){
+    // FIRE: portfolio draw = savings * 0.04 annually
+    effectiveIncome=inputs.savings*0.04;
+  } else {
+    effectiveIncome=inputs.income-inputs.remittance*12-inputs.indiaTripBudget;
+  }
+  const netMo=monthlyNet(locId,Math.max(0,effectiveIncome));
+  const tier=inputs.desiredTier;
+  const cost=getTierCost(locId,tier,inputs); // Issue #2,3: family+school+health adjusted
+  const saves=netMo-cost;
+  const savesRate=netMo>0?saves/netMo:0;
+  // Issue #13: risk_tol adjusts investment return
+  const rtnAdj=inputs.riskTol==='low'?-0.01:inputs.riskTol==='high'?0.015:0;
+  const adjReturn=inputs.invReturn+rtnAdj;
+  const fire=fireYears(netMo,cost,inputs.savings,adjReturn);
+  const minInc=minIncomeForTier(locId,tier,inputs);
+
+  // Direction vs current
+  const curMinInc=minIncomeForTier(inputs.currentLoc,tier,inputs);
+  const incRatio=inputs.income/minInc,curRatio=inputs.income/curMinInc;
+  let direction=incRatio>curRatio*1.15?'up':incRatio<curRatio*0.85?'down':'same';
+
+  const w=inputs.weights;
+  const qol=loc.qol;
+  const isIndia=['india_metro','india_t2','india_small'].includes(locId);
+  const familyScore=isIndia?10:Math.max(2,qol.community-2);
+  const communityScore=isIndia?10:qol.community;
+
+  // Financial score 0-40
+  let finScore=0;
+  if(savesRate>=0.45)finScore=40;else if(savesRate>=0.35)finScore=36;
+  else if(savesRate>=0.25)finScore=30;else if(savesRate>=0.15)finScore=22;
+  else if(savesRate>=0.05)finScore=12;else if(savesRate>=0)finScore=5;
+  if(fire!==null){if(fire<=10)finScore=Math.min(40,finScore+6);else if(fire<=20)finScore=Math.min(40,finScore+3);}
+  // Issue #6: age-aware FIRE framing
+  const yearsToRetire=Math.max(0,(inputs.retireAge||55)-(inputs.age||36));
+  if(fire!==null&&fire<=yearsToRetire) finScore=Math.min(40,finScore+4);
+
+  // Lifestyle/QoL score 0-50
+  const wTotal=Object.values(w).reduce((a,b)=>a+b,0)||1;
+  const lsRaw=(
+    qol.safety*w.safety+qol.healthcare*w.health+qol.aqi*w.aqi+
+    qol.convenience*w.convenience+qol.wlb*w.wlb+qol.education*w.edu+
+    communityScore*w.community+familyScore*w.family+loc.visaStability*w.visa
+  )/wTotal;
+  const lsScore=lsRaw/10*50;
+
+  // Risk penalty — remote work reduces visa penalty when location is India
+  const visaRisk={citizen:0,gc:4,pr_other:6,h1b:18,gc_pending:16,l1:16,oci:0};
+  let baseVR=visaRisk[inputs.visa]||8;
+  if(isRemote&&isIndia) baseVR=Math.min(baseVR,5); // remote to India largely removes visa risk
+  const locVR=(10-loc.visaStability)*1.5;
+  const riskScore=clamp(baseVR+locVR,0,100);
+  const riskPenalty=riskScore*0.15;
+
+  const total=Math.max(0,Math.round(finScore+lsScore-riskPenalty));
+
+  // Migration Sentiment Score
+  const finSentiment=savesRate>=0.30?'Strong financial upside.':savesRate>=0.15?'Solid financial position.':savesRate>=0?'Tight but viable.':'Financial deficit.';
+  const qolSentiment=lsScore>=35?'Excellent quality of life match.':lsScore>=25?'Good lifestyle fit.':'Lifestyle tradeoffs required.';
+  const riskSentiment=riskScore<25?'Low risk environment.':riskScore<50?'Moderate risk — manageable.':'High risk — build contingency plans.';
+  const workNote=isFire?` (Portfolio drawdown: ${fmtD(effectiveIncome)}/yr)`:isRemote?' (Remote — income preserved.)':'';
+  const sentiment=`${finSentiment} ${qolSentiment} ${riskSentiment}${workNote}`;
+
+  return{total,finScore:Math.round(finScore),lsScore:Math.round(lsScore),riskScore:Math.round(riskScore),
+    monthlyNet:Math.round(netMo),monthlyCost:Math.round(cost),monthlySaves:Math.round(saves),
+    savesRate,fire,minInc,direction,sentiment,adjReturn};
+}
+
+// ─── VALIDATION ───────────────────────────────────────────────────────────────
+// Issue #4: enforce 2-6 country selection
+function validateSelection(selected){
+  const el=$('selection-error');
+  if(selected.length<2){if(el)el.textContent='Please select at least 2 locations to compare.';return false;}
+  if(selected.length>6){if(el)el.textContent='Please select at most 6 locations. Deselect some to continue.';return false;}
+  if(el)el.textContent='';
+  return true;
+}
+
+// ─── PRESETS ─────────────────────────────────────────────────────────────────
+const PRESETS={
+  young_it:{income:140000,networth:180000,remittance:300,work:'employed',current_country:'usa_mcol',visa_status:'h1b',family:'1',age:29,retire_age:50,horizon:'10',desired_tier:'2',school_pref:'public',health_pref:'public',income_growth:'modest',risk_tol:'med',w_finance:9,w_family:7,w_health:6,w_edu:4,w_safety:7,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:9,india_trips:4000,countries:['usa_mcol','india_metro','india_t2','uae','singapore']},
+  mid_family:{income:220000,networth:380000,remittance:500,work:'employed',current_country:'usa_mcol',visa_status:'h1b',family:'3',age:38,retire_age:55,horizon:'10',desired_tier:'3',school_pref:'private',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:8,w_health:8,w_edu:9,w_safety:8,w_wlb:6,w_community:7,w_aqi:5,w_convenience:7,w_visa:8,india_trips:5000,countries:['usa_mcol','india_metro','india_t2','uae','singapore','australia']},
+  gc_stable:{income:200000,networth:500000,remittance:600,work:'employed',current_country:'usa_mcol',visa_status:'gc',family:'3',age:42,retire_age:58,horizon:'15',desired_tier:'2',school_pref:'public',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:7,w_health:8,w_edu:8,w_safety:8,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:5,india_trips:4500,countries:['usa_mcol','india_metro','india_t2','uk','uae','australia']},
+  return_india:{income:180000,networth:450000,remittance:400,work:'employed',current_country:'usa_mcol',visa_status:'h1b',family:'3',age:40,retire_age:52,horizon:'5',desired_tier:'3',school_pref:'private',health_pref:'private',income_growth:'flat',risk_tol:'low',w_finance:7,w_family:10,w_health:7,w_edu:8,w_safety:7,w_wlb:8,w_community:10,w_aqi:5,w_convenience:9,w_visa:6,india_trips:3000,countries:['usa_mcol','india_metro','india_t2','india_small']},
+  remote_worker:{income:200000,networth:280000,remittance:500,work:'remote',current_country:'usa_mcol',visa_status:'gc',family:'2',age:34,retire_age:48,horizon:'10',desired_tier:'2',school_pref:'public',health_pref:'public',income_growth:'modest',risk_tol:'high',w_finance:9,w_family:7,w_health:6,w_edu:5,w_safety:7,w_wlb:9,w_community:6,w_aqi:7,w_convenience:7,w_visa:5,india_trips:2500,countries:['india_metro','india_t2','portugal','uae','singapore']},
+  pre_fire:{income:300000,networth:900000,remittance:600,work:'employed',current_country:'usa_hcol',visa_status:'gc',family:'3',age:44,retire_age:50,horizon:'6',desired_tier:'3',school_pref:'private',health_pref:'premium',income_growth:'flat',risk_tol:'low',w_finance:10,w_family:8,w_health:8,w_edu:7,w_safety:8,w_wlb:8,w_community:7,w_aqi:6,w_convenience:8,w_visa:4,india_trips:5000,countries:['usa_hcol','india_metro','india_t2','india_small','uae','portugal']},
+};
+
+function loadPreset(key){
+  const p=PRESETS[key];if(!p)return;
+  Object.keys(p).forEach(k=>{
+    if(k==='countries'){document.querySelectorAll('input[name="countries"]').forEach(cb=>{cb.checked=p.countries.includes(cb.value);});return;}
+    if(k.startsWith('w_')){
+      const el=$(k);if(el){el.value=p[k];const pct=(p[k]-1)/9*100;el.style.setProperty('--pct',pct+'%');$('p'+k.slice(1)).textContent=p[k];}
+      return;
+    }
+    const el=$(k);
+    if(el&&(el.type==='number'||el.tagName==='SELECT'))el.value=p[k];
+    const radio=document.querySelector(`input[name="${k}"][value="${p[k]}"]`);
+    if(radio)radio.checked=true;
+  });
+  document.querySelectorAll('input[type=range]').forEach(el=>{
+    const pct=(parseFloat(el.value)-parseFloat(el.min))/(parseFloat(el.max)-parseFloat(el.min))*100;
+    el.style.setProperty('--pct',pct+'%');
+  });
+  if($('ret_val'))$('ret_val').textContent=val('inv_return')+'%';
+  saveState();
+}
+
+// ─── MAIN COMPARISON ENGINE ───────────────────────────────────────────────────
+function runComparison(){
+  // Issue #5: remove duplicate indiaTripBudget
+  const income=val('income'), savings=val('networth'), invReturn=val('inv_return')/100;
+  const remittance=val('remittance'), indiaTripBudget=val('india_trips');
+  const desiredTier=parseInt(radioVal('desired_tier')||'2')-1;
+  const visa=$('visa_status').value||'h1b';
+  const work=radioVal('work')||'employed';
+  const currentLoc=$('current_country').value||'usa_mcol';
+  const horizon=parseInt(radioVal('horizon')||'10');
+  const age=val('age')||36;
+  const retireAge=val('retire_age')||55;
+  const schoolPref=radioVal('school_pref')||'public';
+  const healthPref=radioVal('health_pref')||'public';
+  const familySize=radioVal('family')||'3';
+  // Issue #12: income growth
+  const igRaw=radioVal('income_growth')||'modest';
+  const incomeGrowth=igRaw==='flat'?0:igRaw==='strong'?0.10:0.05;
+  // Issue #13: risk tolerance adjusts return
+  const riskTol=radioVal('risk_tol')||'med';
+  const weights={
+    finance:parseInt($('w_finance').value||8),family:parseInt($('w_family').value||7),
+    health:parseInt($('w_health').value||7),edu:parseInt($('w_edu').value||7),
+    safety:parseInt($('w_safety').value||7),wlb:parseInt($('w_wlb').value||6),
+    community:parseInt($('w_community').value||7),aqi:parseInt($('w_aqi').value||5),
+    convenience:parseInt($('w_convenience').value||6),visa:parseInt($('w_visa').value||8),
+  };
+
+  const checks=document.querySelectorAll('input[name="countries"]:checked');
+  let selected=[...checks].map(c=>c.value);
+  if(!selected.includes(currentLoc))selected=[currentLoc,...selected];
+
+  // Issue #4: validate 2-6 selection
+  if(!validateSelection(selected)) return;
+
+  // Issue #1: use monthly_savings to cross-check model; show discrepancy note if >20% off
+  const reportedMonthlySavings=val('monthly_savings');
+
+  // Single clean inputs object (Issue #5: no duplicate)
+  const inputs={income,savings,invReturn,remittance,indiaTripBudget,desiredTier,visa,work,
+    currentLoc,horizon,age,retireAge,weights,schoolPref,healthPref,familySize,
+    incomeGrowth,riskTol};
+
+  const results={};
+  selected.forEach(id=>{if(LOC[id])results[id]=scoreLocation(id,inputs);});
+  const ranked=Object.keys(results).sort((a,b)=>results[b].total-results[a].total);
+
+  const scens={
+    remote:$('scen_remote').checked,return:$('scen_return').checked,
+    jobloss:$('scen_jobloss').checked,single:$('scen_single').checked,
+    health:$('scen_health').checked,currency:$('scen_currency').checked,
+  };
+
+  // Issue #1: model vs reported savings check
+  const currentModelSaves=results[currentLoc]?results[currentLoc].monthlySaves:0;
+  const savingsGapNote=(reportedMonthlySavings>0&&Math.abs(currentModelSaves-reportedMonthlySavings)/reportedMonthlySavings>0.30)?
+    `Note: your reported savings (${fmtD(reportedMonthlySavings)}/mo) differs from the model estimate (${fmtD(currentModelSaves)}/mo) by more than 30%. This may reflect expenses not captured in the tier model. Results are based on modelled figures.`:'';
+
+  renderSummaryCard(ranked,results,inputs);
+  renderTopPicks(ranked,results,inputs,savingsGapNote);
+  renderEquivalence(ranked,results,inputs);
+  renderTable(ranked,results,inputs);
+  renderQoL(ranked);
+  renderHiddenCosts(ranked,inputs);
+  renderWealthChart(ranked,results,inputs);
+  renderBestFor(ranked,results);
+  if(Object.values(scens).some(v=>v)){renderScenarios(ranked,results,inputs,scens);$('r-scenarios').style.display='';}
+  else $('r-scenarios').style.display='none';
+  renderFlags(ranked,inputs);
+  renderChoose(ranked);
+
+  $('results').style.display='block';
+  setTimeout(()=>$('results').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+// ─── RENDER: SUMMARY CARD (Issue #17) ─────────────────────────────────────────
+function renderSummaryCard(ranked,results,inputs){
+  const el=$('r-summary');if(!el)return;
+  const best=ranked[0],bestR=results[best],bestLoc=LOC[best];
+  const bestWealth=ranked.reduce((b,id)=>results[id].savesRate>results[b].savesRate?id:b,ranked[0]);
+  const bestFamily=ranked.filter(id=>['india_metro','india_t2','india_small'].includes(id))[0]||ranked[0];
+  const bestRisk=ranked.reduce((b,id)=>results[id].riskScore<results[b].riskScore?id:b,ranked[0]);
+  const biggestRisk=inputs.visa==='h1b'||inputs.visa==='l1'||inputs.visa==='gc_pending'?
+    'Your visa status creates a forced-exit risk. Your current location ties housing security to your employer.':
+    inputs.work==='fire'?'Portfolio draw is your income — sequence-of-returns risk matters more than location.':
+    'Your current savings rate determines your future options more than any single location choice.';
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+    <div style="background:var(--green-light);border:1px solid #A8D5BB;border-radius:12px;padding:14px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green);margin-bottom:6px">💰 Best for Wealth</div>
+      <div style="font-size:18px">${LOC[bestWealth].flag}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:3px">${LOC[bestWealth].name}</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">${fmtPct(results[bestWealth].savesRate)} savings rate</div>
+    </div>
+    <div style="background:var(--blue-light);border:1px solid #9FC4E8;border-radius:12px;padding:14px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);margin-bottom:6px">👨‍👩‍👧 Best for Family</div>
+      <div style="font-size:18px">${LOC[bestFamily].flag}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:3px">${LOC[bestFamily].name}</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">Family proximity + community</div>
+    </div>
+    <div style="background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mid);margin-bottom:6px">🔄 Easiest Move</div>
+      <div style="font-size:18px">${bestLoc.flag}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:3px">${bestLoc.name}</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">Top fit by your inputs</div>
+    </div>
+    <div style="background:var(--amber-light);border:1px solid #F5C98A;border-radius:12px;padding:14px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);margin-bottom:6px">⚠ Biggest Risk</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:4px;line-height:1.4">${biggestRisk}</div>
+    </div>
+  </div>`;
+}
+
+// ─── RENDER: TOP PICKS (Issue #16: honest wording) ────────────────────────────
+function renderTopPicks(ranked,results,inputs,savingsGapNote){
+  const dirLabel={up:'⬆ Lifestyle Upgrade',same:'➡ Similar Lifestyle',down:'⬇ Lifestyle Downgrade'};
+  const dirClass={up:'dir-up',same:'dir-same',down:'dir-down'};
+  const top=ranked.slice(0,Math.min(3,ranked.length));
+  // Issue #16: honest rank labels
+  const rankLabels=['Top fit by your inputs','Strong option','Worth considering'];
+  let html='';
+  if(savingsGapNote) html+=`<div class="notice" style="margin-bottom:12px">${savingsGapNote}</div>`;
+  html+='<div class="picks-row">'+top.map((id,i)=>{
+    const r=results[id],loc=LOC[id];
+    return`<div class="pick-card rank-${i+1}">
+      <div class="pick-rank">${rankLabels[i]}</div>
+      <div class="pick-flag">${loc.flag}</div>
+      <div class="pick-name">${loc.name}</div>
+      <div class="pick-sub">${loc.sub}</div>
+      <div class="pick-direction"><span class="${dirClass[r.direction]}" style="font-size:11px">${dirLabel[r.direction]}</span></div>
+      <div class="pick-score-row">
+        <div class="pick-pill">Match: ${r.total}/100</div>
+        <div class="pick-pill">Saves: ${fmtPct(r.savesRate)}</div>
+        <div class="pick-pill">${r.fire!==null?'FIRE: '+r.fire+'yr':'FIRE: 50+yr'}</div>
+      </div>
+      <div class="pick-metrics">
+        <div class="pm"><div class="pm-label">Take-Home</div><div class="pm-val">${fmtK(r.monthlyNet)}/mo</div></div>
+        <div class="pm"><div class="pm-label">Tier Cost</div><div class="pm-val">${fmtK(r.monthlyCost)}/mo</div></div>
+        <div class="pm"><div class="pm-label">Monthly Saves</div><div class="pm-val">${r.monthlySaves>0?'+':''}${fmtK(r.monthlySaves)}</div></div>
+        <div class="pm"><div class="pm-label">Risk Level</div><div class="pm-val">${r.riskScore<30?'Low':r.riskScore<55?'Medium':'High'}</div></div>
+      </div>
+      <div class="pick-sentiment">${r.sentiment}</div>
+    </div>`;
+  }).join('')+'</div>';
+  $('r-picks').innerHTML=html;
+}
+
+// ─── RENDER: LIFESTYLE EQUIVALENCE ────────────────────────────────────────────
+function renderEquivalence(ranked,results,inputs){
+  const dirLabel={up:'⬆ Upgrade',same:'➡ Similar',down:'⬇ Downgrade'};
+  $('equiv-grid').innerHTML=ranked.map(id=>{
+    const loc=LOC[id];
+    const eq=lifestyleEquivalence(inputs.currentLoc,id,inputs.income,inputs.desiredTier,inputs);
+    const isCurrentLoc=id===inputs.currentLoc;
+    const gapAmt=inputs.income-eq.minIncome;
+    const gapClass=gapAmt>=0?'gap-pos':'gap-neg';
+    const gapText=gapAmt>=0?`Your income is ${fmtK(gapAmt)} above the minimum needed.`:`You need ${fmtK(Math.abs(gapAmt))} more income to hit this lifestyle.`;
+    // Issue #8: honest note about equivalence assumption
+    const remoteNote=inputs.work==='remote'?' (Remote — same gross income applies directly.)'
+      :(id===inputs.currentLoc?'':' (Assumes same gross; local employment may differ.)');
+    return`<div class="equiv-card">
+      <div class="equiv-header">
+        <span class="equiv-flag">${loc.flag}</span>
+        <span class="equiv-name">${loc.name}</span>
+        <span class="equiv-direction ${isCurrentLoc?'dir-same':('dir-'+eq.direction)}">${isCurrentLoc?'Current':dirLabel[eq.direction]}</span>
+      </div>
+      <div class="equiv-income">${fmtD(eq.minIncome)}<span style="font-size:13px;color:var(--text-light)">/yr</span></div>
+      <div class="equiv-income-label">Min. income for <strong>${TIERS[inputs.desiredTier]}</strong> tier (${inputs.familySize==='1'?'single':inputs.familySize==='2'?'couple':inputs.familySize==='4'?'family of 4+':'family of 3'}) at 20%+ savings</div>
+      <div class="equiv-gap ${gapClass}">${gapText}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:5px">${fmtK(inputs.income)}k gross → ${fmtK(eq.actualNet)}/mo net · ${fmtK(eq.tgtCost)}/mo cost${remoteNote}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER: TABLE ────────────────────────────────────────────────────────────
+function renderTable(ranked,results,inputs){
+  const dirTag={up:'<span class="tag-up">Upgrade</span>',same:'<span class="tag-same">Similar</span>',down:'<span class="tag-down">Downgrade</span>'};
+  let html=`<thead><tr>
+    <th>Location</th><th>Take-Home/mo</th><th>Tier Cost/mo</th><th>Saves/mo</th><th>Saves %</th>
+    <th>FIRE</th><th>Risk</th><th>Min Income</th><th>Direction</th>
+  </tr></thead><tbody>`;
+  ranked.forEach(id=>{
+    const r=results[id],loc=LOC[id];
+    const srC=r.savesRate>=0.25?'good':r.savesRate>=0.10?'warn':'bad';
+    const frC=r.fire!==null&&r.fire<=15?'good':r.fire!==null&&r.fire<=25?'warn':'bad';
+    const rkC=r.riskScore<30?'good':r.riskScore<55?'warn':'bad';
+    html+=`<tr>
+      <td>${loc.flag} ${loc.name}</td>
+      <td>${fmtD(r.monthlyNet)}</td><td>${fmtD(r.monthlyCost)}</td>
+      <td class="${srC}">${r.monthlySaves>0?'+':'-'}${fmtD(Math.abs(r.monthlySaves))}</td>
+      <td class="${srC}">${fmtPct(r.savesRate)}</td>
+      <td class="${frC}">${r.fire!==null?r.fire+' yrs':'50+ yrs'}</td>
+      <td class="${rkC}">${r.riskScore<30?'Low':r.riskScore<55?'Med':'High'}</td>
+      <td>${fmtK(r.minInc)}/yr</td>
+      <td>${dirTag[r.direction]||''}</td>
+    </tr>`;
+  });
+  $('snap-table').innerHTML=html+'</tbody>';
+}
+
+// ─── RENDER: QOL SCORES (Issue #15: label as directional estimates) ───────────
+function renderQoL(ranked){
+  const dims=[
+    {k:'safety',l:'🛡️ Safety',c:'#2E7D52'},{k:'healthcare',l:'🏥 Healthcare',c:'#1A5F9E'},
+    {k:'aqi',l:'🌬️ Air Quality',c:'#2C7873'},{k:'convenience',l:'🧹 Convenience',c:'#B7620A'},
+    {k:'wlb',l:'⚖️ Work-Life',c:'#6B3FA0'},{k:'education',l:'🎓 Education',c:'#D7AE43'},
+    {k:'community',l:'🌏 Community',c:'#C0392B'},
+  ];
+  const disclaimer=`<div style="font-size:11px;color:var(--text-light);margin-bottom:10px;padding:8px 12px;background:var(--cream-dark);border-radius:8px">
+    📊 Directional estimates — representative, not city-specific or live-sourced. AQI = inverted (lower pollution = higher score). Sources: WHO AQI, Numbeo Safety Index, EIU Healthcare Index (2024).
+  </div>`;
+  const cards=ranked.map(id=>{
+    const loc=LOC[id];
+    const rows=dims.map(d=>{
+      const score=loc.qol[d.k]||5;
+      return`<div class="qol-row">
+        <span class="qol-label">${d.l}</span>
+        <div class="qol-bar-bg"><div class="qol-bar-fill" style="width:${score*10}%;background:${d.c}"></div></div>
+        <span class="qol-score">${score}</span>
+      </div>`;
+    }).join('');
+    const avg=(Object.values(loc.qol).reduce((a,b)=>a+b,0)/Object.values(loc.qol).length).toFixed(1);
+    return`<div class="qol-card">
+      <div class="qol-flag">${loc.flag}</div>
+      <div class="qol-name">${loc.name} <span style="color:var(--text-light);font-size:10px;font-family:'DM Mono',monospace">avg ${avg}/10</span></div>
+      ${rows}
+    </div>`;
+  }).join('');
+  $('qol-grid').innerHTML=disclaimer+cards;
+}
+
+// ─── RENDER: HIDDEN COSTS ─────────────────────────────────────────────────────
+function renderHiddenCosts(ranked,inputs){
+  $('hc-grid').innerHTML=ranked.map(id=>{
+    const loc=LOC[id];
+    const hc=loc.hiddenCosts||[];
+    const total=hc.reduce((s,i)=>s+i.v,0);
+    const rows=hc.map(i=>`<div class="hc-item">
+      <span class="hc-item-label">${i.l}</span>
+      <span class="hc-item-val">${i.v===0?'—':i.v<0?'−$'+Math.round(Math.abs(i.v))+'/mo':'$'+Math.round(i.v)+'/mo'}</span>
+    </div>`).join('');
+    return`<div class="hc-card">
+      <div class="hc-header"><span class="hc-flag">${loc.flag}</span><strong class="hc-name">${loc.name}</strong></div>
+      ${rows}
+      <div class="hc-total"><span>Hidden cost total</span><span>${total>=0?'$'+Math.round(total):'-$'+Math.round(Math.abs(total))}/mo</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER: WEALTH CHART (Issue #12: uses incomeGrowth) ─────────────────────
+function renderWealthChart(ranked,results,inputs){
+  const canvas=$('wealthChart'),ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.offsetWidth,H=220;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.scale(dpr,dpr);
+  const PAD={top:15,right:20,bottom:40,left:65};
+  const cw=W-PAD.left-PAD.right,ch=H-PAD.top-PAD.bottom;
+  ctx.clearRect(0,0,W,H);
+
+  const trajectories={};
+  ranked.forEach(id=>{
+    const r=results[id];
+    trajectories[id]=netWorthTrajectory(r.monthlyNet,r.monthlyCost,inputs.savings,r.adjReturn||inputs.invReturn,inputs.horizon,inputs.incomeGrowth);
+  });
+
+  const allVals=Object.values(trajectories).flat();
+  const maxV=Math.max(...allVals)*1.1,minV=Math.min(0,...allVals)*0.9;
+  const xPos=i=>PAD.left+(i/inputs.horizon)*cw;
+  const yPos=v=>PAD.top+(1-(v-minV)/(maxV-minV))*ch;
+
+  for(let g=0;g<=4;g++){
+    const y=PAD.top+(g/4)*ch;
+    ctx.strokeStyle='#E2D8C8';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+cw,y);ctx.stroke();
+    const v=maxV-(g/4)*(maxV-minV);
+    ctx.fillStyle='#8891A8';ctx.font='10px DM Sans';ctx.textAlign='right';
+    ctx.fillText('$'+Math.round(v/1000)+'k',PAD.left-5,y+4);
+  }
+  ctx.fillStyle='#8891A8';ctx.font='10px DM Sans';ctx.textAlign='center';
+  for(let y=0;y<=inputs.horizon;y+=Math.ceil(inputs.horizon/5)){
+    ctx.fillText('Yr '+y,xPos(y),H-PAD.bottom+14);
+  }
+  ranked.forEach((id,i)=>{
+    const data=trajectories[id];
+    const color=CHART_COLORS[i%CHART_COLORS.length];
+    ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.setLineDash([]);
+    ctx.beginPath();
+    data.forEach((v,j)=>{const x=xPos(j),y=yPos(v);j===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.stroke();
+    const last=data[data.length-1],lx=xPos(data.length-1),ly=yPos(last);
+    ctx.fillStyle=color;ctx.font='bold 10px DM Mono';ctx.textAlign='left';
+    ctx.fillText('$'+Math.round(last/1000)+'k',lx+3,ly+4);
+  });
+  const growthNote=inputs.incomeGrowth>0?` · Income grows ${fmtPct({0:0,0.05:0.05,0.10:0.10}[inputs.incomeGrowth]||inputs.incomeGrowth)}/yr`:'';
+  $('wealth-legend').innerHTML=ranked.map((id,i)=>`<span style="display:inline-flex;align-items:center;gap:4px">
+    <span style="width:14px;height:4px;border-radius:2px;background:${CHART_COLORS[i%CHART_COLORS.length]};display:inline-block"></span>
+    ${LOC[id].flag} ${LOC[id].name}
+  </span>`).join('')+`<span style="color:var(--text-light);font-size:10px">${growthNote}</span>`;
+}
+
+// ─── RENDER: BEST FOR ─────────────────────────────────────────────────────────
+function renderBestFor(ranked,results){
+  const cats=[
+    {label:'💰 Wealth Building',fn:r=>r.savesRate,fmt:(id,r)=>fmtPct(r.savesRate)+' savings'},
+    {label:'🔥 Earliest FIRE',fn:r=>r.fire!==null?100-r.fire:0,fmt:(id,r)=>r.fire!==null?r.fire+' years':'50+ years'},
+    {label:'🛡️ Most Secure',fn:r=>100-r.riskScore,fmt:(id,r)=>`Risk: ${r.riskScore<30?'Low':r.riskScore<55?'Med':'High'}`},
+    {label:'🌍 QoL Score',fn:r=>r.lsScore,fmt:(id,r)=>`QoL: ${r.lsScore}/50`},
+    {label:'💸 Tax Efficiency',fn:r=>r.monthlyNet,fmt:(id,r)=>fmtK(r.monthlyNet)+'/mo net'},
+    {label:'⬆ Lifestyle Upgrade',fn:r=>r.direction==='up'?1:r.direction==='same'?0:-1,fmt:(id,r)=>({up:'Upgrade',same:'Similar',down:'Downgrade'}[r.direction])},
+  ];
+  $('best-grid').innerHTML=cats.map(cat=>{
+    const bestId=ranked.reduce((b,id)=>cat.fn(results[id])>cat.fn(results[b])?id:b,ranked[0]);
+    const loc=LOC[bestId];
+    return`<div class="best-card">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px">${cat.label}</div>
+      <div style="font-size:22px">${loc.flag}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:3px">${loc.name}</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">${cat.fmt(bestId,results[bestId])}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER: SCENARIOS (Issues #9, #10 fixed) ─────────────────────────────────
+function renderScenarios(ranked,results,inputs,scens){
+  let html='';
+  if(scens.remote){
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">🏠 India Remote Work — Keep ${fmtD(inputs.income)}/yr USD, India Lifestyle</h4>
+    <div class="notice" style="margin-bottom:12px">RNOR window: foreign income typically tax-free for 2-3 years after returning. After that, standard Indian rates apply. Confirm timing with a CA.</div>
+    <div class="scen3">`;
+    // Issue #9: fix filter — show all three India options always for this scenario
+    ['india_metro','india_t2','india_small'].forEach(id=>{
+      const loc=LOC[id],r=scoreLocation(id,{...inputs,work:'remote'});
+      const cls=r.savesRate>=0.50?'g':r.savesRate>=0.30?'a':'r';
+      html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
+        <div class="sc-val">${fmtPct(r.savesRate)} savings</div>
+        <div class="sc-desc">${fmtK(r.monthlySaves)}/mo saved · FIRE ${r.fire||'50+'}yr · RNOR: yrs 1-3 foreign income untaxed</div></div>`;
+    });
+    html+=`</div><div style="height:16px"></div>`;
+  }
+  if(scens.return){
+    const indiaSal=inputs.income*0.40;
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">✈️ Return to India — Local Salary (~${fmtD(indiaSal)}/yr, ~40% of current income)</h4>
+    <div class="scen3">`;
+    ['india_metro','india_t2','india_small'].forEach(id=>{
+      const loc=LOC[id],r=scoreLocation(id,{...inputs,income:indiaSal});
+      const cls=r.savesRate>=0.25?'g':r.savesRate>=0.05?'a':'r';
+      // Issue #10: compute actual supported tier properly
+      let supportedTier=0;
+      for(let t=3;t>=0;t--){if(r.monthlySaves>=0&&getTierCost(id,t,inputs)<=r.monthlyNet*0.80){supportedTier=t;break;}}
+      html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
+        <div class="sc-val">${fmtD(r.monthlyNet)}/mo net</div>
+        <div class="sc-desc">${fmtPct(r.savesRate)} savings · Max sustainable tier: ${TIERS[supportedTier]}</div></div>`;
+    });
+    html+=`</div><div style="height:16px"></div>`;
+  }
+  if(scens.jobloss){
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">📉 Job Loss — 6 Months Zero Income. Runway at Current Tier:</h4><div class="scen3">`;
+    ranked.slice(0,6).forEach(id=>{
+      const loc=LOC[id],r=results[id];
+      const runway=Math.round(inputs.savings/r.monthlyCost);
+      const cls=runway>=18?'g':runway>=9?'a':'r';
+      html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
+        <div class="sc-val">${runway} months runway</div>
+        <div class="sc-desc">At ${fmtD(r.monthlyCost)}/mo · ${fmtD(inputs.savings)} savings buffer</div></div>`;
+    });
+    html+=`</div><div style="height:16px"></div>`;
+  }
+  if(scens.single){
+    const halfInc=inputs.income*0.5;
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">💍 Single Income — Spouse Stops (50% drop to ${fmtD(halfInc)}/yr)</h4><div class="scen3">`;
+    ranked.slice(0,6).forEach(id=>{
+      const loc=LOC[id],r=scoreLocation(id,{...inputs,income:halfInc});
+      const cls=r.savesRate>=0.15?'g':r.savesRate>0?'a':'r';
+      html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
+        <div class="sc-val">${fmtD(r.monthlyNet)}/mo net</div>
+        <div class="sc-desc">${r.savesRate>0?fmtPct(r.savesRate)+' savings':'Deficit: '+fmtD(Math.abs(r.monthlySaves))+'/mo'}</div></div>`;
+    });
+    html+=`</div><div style="height:16px"></div>`;
+  }
+  if(scens.health){
+    const oop={usa_hcol:44000,usa_mcol:42000,india_metro:2800,india_t2:2200,india_small:1500,uk:400,uae:7000,singapore:14000,australia:4500,germany:800,portugal:1200};
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">🏥 Health Emergency — True Out-of-Pocket for $50k Medical Event</h4><div class="scen3">`;
+    ranked.slice(0,6).forEach(id=>{
+      const loc=LOC[id],cost=oop[id]||8000;
+      const cls=cost<=3000?'g':cost<=15000?'a':'r';
+      html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
+        <div class="sc-val">${fmtD(cost)} OOP</div>
+        <div class="sc-desc">${cost<=3000?'Healthcare system absorbs most.':cost<=15000?'Significant but manageable.':'Major financial shock.'}</div></div>`;
+    });
+    html+=`</div><div style="height:16px"></div>`;
+  }
+  if(scens.currency){
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">💱 Currency Shock — USD Strengthens 20% vs INR (₹100/$ scenario)</h4><div class="scen3">`;
+    [['india_metro','INR savings lose 20% USD value. Remittances buy more in India but USD savings shrink in INR terms.','r'],
+     ['uae','AED is pegged to USD. No direct currency impact. Your savings are fully protected.','g'],
+     ['usa_mcol','You ARE the USD. Strongest possible position in a USD-strength scenario.','g']].forEach(([id,desc,cls])=>{
+      if(!LOC[id])return;
+      html+=`<div class="sc ${cls}"><div class="sc-title">${LOC[id].flag} ${LOC[id].name}</div>
+        <div class="sc-val">${cls==='g'?'Protected':'−20% USD value'}</div>
+        <div class="sc-desc">${desc}</div></div>`;
+    });
+    html+=`</div>`;
+  }
+  $('scenario-results').innerHTML=html;
+}
+
+// ─── RENDER: NRI FLAGS ────────────────────────────────────────────────────────
+function renderFlags(ranked,inputs){
+  const global=[
+    {l:'amber',t:'RNOR Window — Time Your Return',d:'Returning NRIs get RNOR status for 2-3 years. Foreign income typically exempt from Indian tax. Plan return year strategically with a CA — this window alone can be worth $30-100k.'},
+    {l:'red',t:'401k / IRA: The Return-to-India Trap',d:'Early withdrawal: 10% penalty + US tax + potential Indian tax. On $400k 401k, premature withdrawal could cost $120-160k. Plan Roth conversions and drawdown strategy before leaving.'},
+    {l:'amber',t:'FBAR + FATCA: Filing Never Stops',d:'US persons with foreign accounts >$10k must file FBAR annually. FATCA Form 8938 for larger foreign assets. Non-compliance: up to $10k per violation.'},
+    {l:'green',t:'OCI Card: Get It Before You Renounce',d:'Apply for OCI before renouncing Indian citizenship. Gives near-citizen rights in India on a near-permanent basis. Do not leave this too late.'},
+    {l:'amber',t:'NRE/NRO Account Structure',d:'Rental income and India earnings: NRO. Foreign remittances: NRE (tax-free interest). Repatriation from NRO requires 15CA/15CB. Set up banking architecture before any major move.'},
+    {l:'blue',t:'DTAA: Double Tax Treaties',d:'India has DTAA with US, UK, UAE (limited), Singapore, Germany, Australia. Never assume automatic relief — always file in both countries and claim treaty relief explicitly.'},
+  ];
+  const specific=ranked.flatMap(id=>LOC[id].flags.map(f=>({...f,locFlag:LOC[id].flag,locName:LOC[id].name})));
+  $('nri-flags').innerHTML=[...global,...specific].map(f=>`
+    <div class="risk-item risk-${f.l}"><div class="rdot"></div>
+    <div class="risk-text"><strong>${f.locFlag?f.locFlag+' '+f.locName+' — ':''} ${f.t}</strong><span>${f.d}</span></div></div>`).join('');
+}
+
+// ─── RENDER: CHOOSE ───────────────────────────────────────────────────────────
+function renderChoose(ranked){
+  $('choose-grid').innerHTML=ranked.map(id=>{
+    const loc=LOC[id];
+    return`<div class="choose-card">
+      <div class="choose-hdr"><span style="font-size:22px">${loc.flag}</span><strong style="font-family:'Playfair Display',serif;font-size:15px;color:var(--navy)">${loc.name}</strong></div>
+      <div class="choose-body">${loc.choose}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
+function switchStep(n){
+  document.querySelectorAll('.step-pane').forEach((p,i)=>p.classList.toggle('active',i===n));
+  document.querySelectorAll('.step-btn').forEach((b,i)=>b.classList.toggle('active',i===n));
+}
+function updateSld(el,displayId,unit){
+  const v=parseFloat(el.value),pct=(v-parseFloat(el.min))/(parseFloat(el.max)-parseFloat(el.min))*100;
+  el.style.setProperty('--pct',pct+'%');$(displayId).textContent=v+unit;
+}
+function updatePW(el,displayId){
+  const v=parseInt(el.value),pct=(v-1)/9*100;
+  el.style.setProperty('--pct',pct+'%');$(displayId).textContent=v;
+}
+
+// ─── COUNTRY SELECTION LIMIT (Issue #4) ──────────────────────────────────────
+document.querySelectorAll('input[name="countries"]').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    const checked=document.querySelectorAll('input[name="countries"]:checked');
+    const el=$('selection-error');
+    if(checked.length>6){cb.checked=false;if(el)el.textContent='Max 6 locations. Deselect one first.';}
+    else if(el) el.textContent='';
+  });
+});
+
+// ─── LOCAL STORAGE ────────────────────────────────────────────────────────────
+function saveState(){
+  const data={};
+  document.querySelectorAll('input[id],select[id]').forEach(el=>{
+    if(['range','number'].includes(el.type)||el.tagName==='SELECT')data[el.id]=el.value;
+  });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el=>{data[el.name]=el.value;});
+  document.querySelectorAll('input[name="countries"]').forEach(cb=>{data['cc_'+cb.value]=cb.checked;});
+  document.querySelectorAll('input[type=checkbox][id]').forEach(cb=>{data[cb.id]=cb.checked;});
+  try{localStorage.setItem('nriLifeV2',JSON.stringify(data));}catch(e){}
+}
+function loadState(){
+  try{
+    const data=JSON.parse(localStorage.getItem('nriLifeV2')||'{}');
+    if(!Object.keys(data).length)return;
+    Object.keys(data).forEach(k=>{
+      if(k.startsWith('cc_')){const cb=document.querySelector(`input[name="countries"][value="${k.slice(3)}"]`);if(cb)cb.checked=data[k];return;}
+      const el=$(k);
+      if(el){
+        if(['range','number'].includes(el.type)||el.tagName==='SELECT')el.value=data[k];
+        if(el.type==='checkbox')el.checked=data[k];
+      }
+      const radio=document.querySelector(`input[name="${k}"][value="${data[k]}"]`);
+      if(radio)radio.checked=true;
+    });
+    document.querySelectorAll('input[type=range]').forEach(el=>{
+      const pct=(parseFloat(el.value)-parseFloat(el.min))/(parseFloat(el.max)-parseFloat(el.min))*100;
+      el.style.setProperty('--pct',pct+'%');
+    });
+    if($('ret_val'))$('ret_val').textContent=val('inv_return')+'%';
+    [['w_finance','pw_finance'],['w_family','pw_family'],['w_health','pw_health'],['w_edu','pw_edu'],
+     ['w_safety','pw_safety'],['w_wlb','pw_wlb'],['w_community','pw_community'],
+     ['w_aqi','pw_aqi'],['w_convenience','pw_convenience'],['w_visa','pw_visa']].forEach(([id,did])=>{
+      if($(id))$(did).textContent=$(id).value;
+    });
+  }catch(e){}
+}
+document.addEventListener('change',saveState);document.addEventListener('input',saveState);
+document.querySelectorAll('input[type=range]').forEach(el=>{
+  const pct=(parseFloat(el.value)-parseFloat(el.min))/(parseFloat(el.max)-parseFloat(el.min))*100;
+  el.style.setProperty('--pct',pct+'%');
+});
+window.addEventListener('load',loadState);
+</script>
+
+</body>
+</html>
