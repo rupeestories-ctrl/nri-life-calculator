@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRI Life Calculator · Where Should I Live? · RupeeStories</title>
+<title>NRI Life Calculator v3.1 · Where Should I Live? · RupeeStories</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -218,7 +218,7 @@ canvas{width:100%!important}
 <div class="hero">
   <div class="hero-badge">r/RupeeStories · Free Tool</div>
   <h1>Where Should <em>I Live?</em></h1>
-  <p>A comprehensive NRI Life Calculator. Compare 11 locations on income, lifestyle equivalence, hidden costs, quality of life, risk, and wealth trajectory — weighted by your priorities.</p>
+  <p>A planning tool for NRIs comparing financial fit, family and lifestyle fit, and how realistic each move is. It does not decide where you belong — it shows what is driving the tradeoff.</p>
   <div class="hero-chips">
     <span class="hero-chip">Lifestyle Equivalence Engine</span>
     <span class="hero-chip">Hidden Tax Module</span>
@@ -227,7 +227,7 @@ canvas{width:100%!important}
     <span class="hero-chip">FIRE Timeline</span>
     <span class="hero-chip">India Remote Work</span>
     <span class="hero-chip">RNOR Window</span>
-    <span class="hero-chip">Migration Sentiment Score</span>
+    <span class="hero-chip">Financial · Personal · Realistic Fit</span>
   </div>
 </div>
 
@@ -274,12 +274,12 @@ canvas{width:100%!important}
         <div class="hint">Student loans, car loans, personal loans, India home-loan EMI. This follows you regardless of where you move — a US student loan doesn't disappear because you moved to Dubai. Don't include a mortgage on a home you'd sell before moving.</div></div>
       <div class="field"><label>Income After Move <span class="tip">Affects every number below</span></label>
         <div class="radio-group">
-          <label class="radio-option"><input type="radio" name="work" value="same" checked><span>Same income / expat package</span></label>
-          <label class="radio-option"><input type="radio" name="work" value="local"><span>Local market salary</span></label>
+          <label class="radio-option"><input type="radio" name="work" value="same"><span>Confirmed same salary / expat package</span></label>
+          <label class="radio-option"><input type="radio" name="work" value="local" checked><span>Expected local salary</span></label>
           <label class="radio-option"><input type="radio" name="work" value="remote"><span>Remote foreign income</span></label>
           <label class="radio-option"><input type="radio" name="work" value="fire"><span>FIRE / Retired</span></label>
         </div>
-        <div class="hint"><strong>Same income / expat package</strong> assumes comparable pay everywhere — reasonable for expat packages or remote work, unrealistic for taking a local job in a lower-pay market. <strong>Local market salary</strong> auto-scales your income to a typical local rate per destination (rough multiplier, not a real salary survey). Best used when your reported income is roughly US-style professional income — if you're already in UAE, UK, or India, local salary scaling is only a rough comparison, not a survey of pay in your current market. <strong>Remote foreign income</strong> keeps your full reported income (USD, GBP, EUR, SGD, AED — whatever currency, already converted) wherever you live. <strong>FIRE mode</strong> uses a simple 4% portfolio draw — it does not model Roth vs 401k vs brokerage capital-gains treatment, RNOR, or treaty rules.</div></div>
+        <div class="hint"><strong>Confirmed same salary / expat package</strong> should be used only when the employer has confirmed that pay will continue after relocation. <strong>Expected local salary</strong> auto-scales your income to a rough local rate per destination (rough multiplier, not a real salary survey). Best used when your reported income is roughly US-style professional income — if you're already in UAE, UK, or India, local salary scaling is only a rough comparison, not a survey of pay in your current market. <strong>Remote foreign income</strong> keeps your full reported income (USD, GBP, EUR, SGD, AED — whatever currency, already converted) wherever you live. <strong>FIRE mode</strong> uses a simple 4% portfolio draw — it does not model Roth vs 401k vs brokerage capital-gains treatment, RNOR, or treaty rules.</div></div>
     </div>
     <div class="card">
       <div class="sec-hdr"><div class="sec-icon">🏠</div><div><h3>Your Situation</h3><p>Where you are and who you're planning for</p></div></div>
@@ -323,6 +323,30 @@ canvas{width:100%!important}
           <label class="radio-option"><input type="radio" name="parents_loc" value="not_factor"><span>Not a factor</span></label>
         </div>
         <div class="hint">Drives the family-proximity part of your score — India locations only score highest here if that's actually where your family is.</div></div>
+      <div class="field"><label>Children's Roots in Current Country</label>
+        <select id="kids_roots">
+          <option value="na">Not applicable / no children</option>
+          <option value="low">Low — young or comfortable moving</option>
+          <option value="medium" selected>Medium — adjustment would be real</option>
+          <option value="high">High — school, friends and identity are firmly rooted</option>
+        </select>
+        <div class="hint">A move away from the current country receives a larger transition penalty when children are firmly rooted.</div></div>
+      <div class="field"><label>Spouse / Partner Preference</label>
+        <select id="spouse_pref">
+          <option value="neutral" selected>No clear preference / deciding together</option>
+          <option value="current">Strongly prefers current country</option>
+          <option value="india">Strongly prefers India</option>
+          <option value="abroad">Prefers a country outside India</option>
+        </select>
+        <div class="hint">This changes personal fit. It does not change the financial calculation.</div></div>
+      <div class="field"><label>Move Feasibility for Alternatives</label>
+        <select id="move_feasibility">
+          <option value="confirmed">Confirmed right to live/work or approved remote arrangement</option>
+          <option value="likely" selected>Likely, but not fully confirmed</option>
+          <option value="sponsor">Would require employer sponsorship or a new job</option>
+          <option value="unknown">No clear visa, job or residency path yet</option>
+        </select>
+        <div class="hint">Applies to destinations other than your current country and India when you already have Indian citizenship or OCI.</div></div>
       <div class="field-row">
         <div class="field"><label>Your Age</label><input type="number" id="age" value="36" min="22" max="65"></div>
         <div class="field"><label>Target Retirement Age</label><input type="number" id="retire_age" value="55" min="40" max="75"></div>
@@ -462,6 +486,7 @@ canvas{width:100%!important}
   </div>
 </div>
 
+<div class="notice" style="margin-top:22px"><strong>Read before comparing:</strong> “Confirmed same salary” should be used only with a real employer arrangement. Scores are directional ranges built from broad location assumptions. A top result can still be impractical because of children, spouse, career, visa, health, or city-level details.</div>
 <div class="analyze-wrap"><button class="btn-analyze" onclick="runComparison()">⚡ Compare My Options</button></div>
 <!-- ═══ RESULTS ══════════════════════════════════════════════════ -->
 <div id="results">
@@ -479,7 +504,7 @@ canvas{width:100%!important}
   </div>
 
   <div id="r-picks"></div>
-  <div id="r-summary" style="margin-bottom:16px"></div>
+  <div id="r-summary" style="margin-bottom:16px"></div><div class="notice"><strong>How to read the result:</strong> Financial fit measures projected savings and FIRE timing. Personal fit measures your stated family and lifestyle priorities. Realism measures whether the move appears executable based on legal and work assumptions. The balanced score combines all three.</div>
 
   <div class="section-grid" style="margin-top:16px">
 
@@ -553,8 +578,8 @@ canvas{width:100%!important}
 </div>
 
 <div class="footnote">
-  Built with 💛 for r/RupeeStories &nbsp;·&nbsp; <strong>Not financial advice.</strong> All figures are estimates using simplified effective tax models (calibrated to effective rates including social charges, early 2026). RNOR modeled for foreign passive income only. IFICI/NHR modeled for remote workers in Portugal. Consult a cross-border CPA / CA for your specific situation. &nbsp;·&nbsp;
-  Cost data: Numbeo, Expatistan, Livingcost (2024–25). Salary benchmarks: Levels.fyi, Glassdoor. &nbsp;·&nbsp; v2.1
+  Built with 💛 for r/RupeeStories &nbsp;·&nbsp; <strong>Planning estimate, not financial, tax, legal, immigration, medical, or relocation advice.</strong> All figures are estimates using simplified effective tax models (calibrated to broad effective rates including social charges, early 2026; US HCOL is partly single-filer weighted). RNOR modeled for foreign passive income only. IFICI/NHR modeled for remote workers in Portugal. Consult a cross-border CPA / CA for your specific situation. &nbsp;·&nbsp;
+  Cost and salary figures are broad planning estimates and may lag local conditions. City, employer, school and health choices can change results materially. &nbsp;·&nbsp; v3.1
 </div>
 </div>
 <script>
@@ -586,7 +611,7 @@ const LOC = {
     flags:[
       {l:'red',t:'Estate Tax: Non-Citizens',d:'US situs assets face a $60k exemption vs $13M for citizens. On a $500k estate, that\'s potentially $175k in tax. Plan before accumulation scales.'},
       {l:'red',t:'401k Trap on Return to India',d:'Early 401k withdrawal: 10% penalty + US tax + potential Indian tax. Don\'t touch retirement accounts without a drawdown strategy. Roth conversions first.'},
-      {l:'amber',t:'H-1B Job-Loss Clock',d:'60 days to find new employer, change status, or depart. A $1.2M house and a 60-day visa window are dangerous together. Build a 12-month liquid bridge fund.'},
+      {l:'amber',t:'H-1B Job-Loss Clock',d:'A discretionary grace period of up to 60 days may apply, or until the authorized validity period ends if earlier. Use an immigration lawyer for your timeline. A $1.2M house and a 60-day visa window are dangerous together. Build a 12-month liquid bridge fund.'},
       {l:'green',t:'Highest Absolute Wealth Building',d:'Senior tech/finance: $250-400k. RSUs, 401k match, ESPP compound dramatically. No other country here comes close for absolute wealth accumulation.'},
     ],
   },
@@ -624,7 +649,7 @@ const LOC = {
     ],
     choose:'India Metro with USD remote income is the most underrated position here. Note: remote salary is taxed in India from day one — RNOR shelters foreign passive income (time RSU vests and asset sales into that 2-3 year window). Domestic help (cook+driver+maid ≈ $350/mo) raises effective quality of life by 1-2 tiers. AQI is the main penalty — Bangalore and Hyderabad are significantly better than Delhi/Mumbai.',
     flags:[
-      {l:'green',t:'RNOR Window: What It Actually Exempts',d:'RNOR status (roughly 2-3 years after return) exempts foreign PASSIVE income — interest, dividends, capital gains, foreign rental. It does NOT exempt salary for work performed from India, even from a foreign employer. Time asset sales and RSU vests into the window. Confirm with a CA.'},
+      {l:'green',t:'RNOR Window: What It Actually Exempts',d:'RNOR status (roughly 2-3 years after return) exempts foreign PASSIVE income — interest, dividends, capital gains, foreign rental. It does NOT exempt salary for work performed from India, even from a foreign employer. Asset-sale timing may matter. RSUs and employment-related equity require separate sourcing analysis. Confirm with a CA.'},
       {l:'green',t:'Domestic Help: The Invisible Multiplier',d:'Cook + driver + housekeeping ≈ ₹25-40k/month ($300-480). Your effective lifestyle tier is 1-2 notches above cost numbers. No Western equivalent.'},
       {l:'amber',t:'India\'s Hidden Private Tax',d:'You pay private rates for what public systems provide in the West: school (₹3-8L/yr), security, water, power backup. Adds ₹8-15k/month.'},
       {l:'amber',t:'Surcharge Bites at High Income',d:'Above ₹50L: 10% surcharge. Above ₹1Cr: 15%. Above ₹2Cr: 25% (new regime cap). A $300k remote salary faces ~37% effective Indian tax — plan accordingly.'},
@@ -664,7 +689,7 @@ const LOC = {
     ],
     choose:'Small-city India is the FIRE destination, not the career destination. $750/month = comfortable family life. At 7% real returns on $800k, you draw $4,666/month — 6× what you need, and RNOR shelters your foreign portfolio income for the first 2-3 years. Tradeoff: healthcare requires planning (travel to Tier 1 for serious conditions).',
     flags:[
-      {l:'green',t:'Lowest Cost + Maximum Family',d:'Parents nearby, zero remittance, lowest lifestyle cost in comparison. The pure FIRE destination.'},
+      {l:'green',t:'Lowest Cost + Maximum Family',d:'Parents may be nearby and lifestyle costs are the lowest in this comparison. Any remittance you entered is still deducted. A strong FIRE candidate when healthcare access is planned.'},
       {l:'amber',t:'Healthcare Planning Non-Negotiable',d:'Build a ₹50L+ health emergency fund OR premium insurance before settling. Serious conditions need Tier 1 cities.'},
     ],
   },
@@ -784,9 +809,9 @@ const LOC = {
       {l:'Local school vs intl school',v:200},{l:'No domestic help culture',v:0},
       {l:'Annual India trips (÷12)',v:267},{l:'Car + insurance',v:250},
     ],
-    choose:'Portugal is the standout choice for USD-income NRIs wanting European lifestyle at dramatically lower cost. IFICI (NHR 2.0) offers a 20% flat rate for 10 years for qualifying remote professionals — this tool models it at ~23% including social security when you select Remote work. Lisbon comfortable family life: $4,000/month vs $7,100 in London. Indian community is small — weight this if Indian food and culture matter.',
+    choose:'Portugal is the standout choice for USD-income NRIs wanting European lifestyle at dramatically lower cost. IFICI (NHR 2.0) offers a 20% flat rate for 10 years for qualifying remote professionals — this tool uses a cautious ~28% planning rate including social charges when you select Remote work. Lisbon comfortable family life: $4,000/month vs $7,100 in London. Indian community is small — weight this if Indian food and culture matter.',
     flags:[
-      {l:'green',t:'IFICI (NHR 2.0): 20% Flat Rate for 10 Years',d:'20% flat income tax for qualifying new residents in eligible professions for 10 years. Modeled here as ~23% blended including social security, applied when work = Remote. Rules changed in 2024 (NHR → IFICI) — confirm eligibility with a Portuguese tax advisor.'},
+      {l:'green',t:'IFICI (NHR 2.0): 20% Flat Rate for 10 Years',d:'20% flat income tax for qualifying new residents in eligible professions for 10 years. Modeled here at ~28% as a cautious blended planning rate including social charges, applied when work = Remote. Rules changed in 2024 (NHR → IFICI) — confirm eligibility with a Portuguese tax advisor.'},
       {l:'green',t:'D7 / Digital Nomad Visa',d:'D8 visa for remote workers with foreign income above €760/month. Clear EU residency pathway for USD-income NRIs.'},
       {l:'amber',t:'Small Indian Community',d:'~10,000 Indians in Portugal. Limited Indian food outside Lisbon. Genuine tradeoff vs UK, UAE, or Singapore.'},
       {l:'amber',t:'Local Career Market Very Limited',d:'Portugal works as a remote-work financial base. Local senior roles are very thin. This is a lifestyle + financial optimization play, not a career play.'},
@@ -866,7 +891,11 @@ const LOCAL_INCOME_MULT={
 function grossFor(inputs,locId){
   if(inputs.work==='fire')return inputs.savings*0.04;
   const base=Math.max(0,inputs.income);
-  if(inputs.work==='local')return base*(LOCAL_INCOME_MULT[locId]??0.5);
+  if(inputs.work==='local'&&locId!==inputs.currentLoc){
+    const destinationMult=LOCAL_INCOME_MULT[locId]??0.5;
+    const currentMult=LOCAL_INCOME_MULT[inputs.currentLoc]??1;
+    return base*destinationMult/currentMult;
+  }
   return base;
 }
 
@@ -917,15 +946,16 @@ function tripCostFor(locId,inputs){
 // year is 1-based. Models:
 //  - RNOR (India, years 1-2): exempts foreign PASSIVE income only → applies to FIRE
 //    portfolio draws, NOT to salary for work performed from India (Indian-sourced).
-//  - IFICI/NHR (Portugal, years 1-10, remote work): ~23% blended (20% flat + social security).
+//  - IFICI/NHR (Portugal, years 1-10, remote work): ~28% planning estimate including social charges.
 //  - FIRE draws elsewhere: 60% of the ordinary effective rate (simplified capital-gains treatment).
 // Every fixed monthly cash obligation that isn't part of a location's cost-of-living
 // tier: remittances, India trips (destination-scaled), existing debt (location-
 // independent — a US student loan doesn't disappear because you moved), and the
 // education sinking-fund contribution (see eduMonthlySavings below).
-function monthlyExtras(locId,inputs){
+function monthlyExtras(locId,inputs,year=1){
   const trips=tripCostFor(locId,inputs);
-  return (inputs.remittance||0)+trips/12+(inputs.debtMonthly||0)+eduMonthlySavings(inputs);
+  const educationContribution=year<=(inputs.eduYearsOut||10)?eduMonthlySavings(inputs):0;
+  return (inputs.remittance||0)+trips/12+(inputs.debtMonthly||0)+educationContribution;
 }
 
 // Permanent obligations only — everything monthlyExtras() includes EXCEPT the
@@ -945,9 +975,9 @@ function netMoAt(locId,inputs,year,gross){
     rate*=0.60;
     if(isIndia&&loc.rnorBenefit&&year<=2)rate=0;
   } else if(locId==='portugal'&&inputs.work==='remote'&&loc.nhrBenefit&&year<=10){
-    rate=Math.min(rate,0.23);
+    rate=Math.min(rate,0.28);
   }
-  return (gross*(1-rate))/12-monthlyExtras(locId,inputs);
+  return (gross*(1-rate))/12-monthlyExtras(locId,inputs,year);
 }
 
 // ─── FINANCIAL ENGINE ─────────────────────────────────────────────────────────
@@ -1040,6 +1070,40 @@ function familyProximityScore(locId,inputs){
 }
 
 // ─── SCORING ENGINE ───────────────────────────────────────────────────────────
+function destinationFeasibilityScore(locId,inputs){
+  if(locId===inputs.currentLoc) return 10;
+  const isIndia=INDIA_IDS.includes(locId);
+  if(isIndia && ['oci','citizen'].includes(inputs.visa)) return 10;
+  const map={confirmed:9,likely:7,sponsor:4,unknown:2};
+  return map[inputs.moveFeasibility]||7;
+}
+
+function childTransitionScore(locId,inputs){
+  if(locId===inputs.currentLoc || inputs.kidsRoots==='na') return 10;
+  const map={low:8,medium:5.5,high:2.5};
+  return map[inputs.kidsRoots]||5.5;
+}
+
+function spouseFitScore(locId,inputs){
+  const p=inputs.spousePref||'neutral';
+  if(p==='neutral') return 7;
+  if(p==='current') return locId===inputs.currentLoc?10:3;
+  if(p==='india') return INDIA_IDS.includes(locId)?10:3;
+  if(p==='abroad') return INDIA_IDS.includes(locId)?3:8;
+  return 7;
+}
+
+function destinationVisaRisk(locId,inputs){
+  // Current immigration status matters primarily when staying in the current country.
+  if(locId===inputs.currentLoc){
+    const current={citizen:0,gc:5,pr_other:6,h1b:22,gc_pending:20,l1:20,oci:4};
+    return current[inputs.visa]??10;
+  }
+  if(INDIA_IDS.includes(locId) && ['oci','citizen'].includes(inputs.visa)) return 2;
+  const feasibility={confirmed:5,likely:12,sponsor:28,unknown:42};
+  return feasibility[inputs.moveFeasibility]??12;
+}
+
 function scoreLocation(locId,inputs){
   const loc=LOC[locId];
   const isRemote=inputs.work==='remote';
@@ -1048,11 +1112,8 @@ function scoreLocation(locId,inputs){
   const isIndia=INDIA_IDS.includes(locId);
   const gross=grossFor(inputs,locId);
 
-  // Headline net: steady-state (post-RNOR) for India FIRE; NHR rate for Portugal remote
-  // since the IFICI window (10 yrs) covers typical horizons.
   const headlineYear=(locId==='portugal'&&isRemote)?1:3;
   const netMo=netMoAt(locId,inputs,headlineYear,gross);
-  // RNOR bonus: extra net during the ~2-year window (India + FIRE, foreign passive income).
   let rnorBonus=0;
   if(isIndia&&isFire&&loc.rnorBenefit){
     rnorBonus=Math.round((netMoAt(locId,inputs,1,gross)-netMo)*24);
@@ -1061,76 +1122,74 @@ function scoreLocation(locId,inputs){
   const tier=inputs.desiredTier;
   const cost=getTierCost(locId,tier,inputs);
   const saves=netMo-cost;
-  const savesRate=netMo>0?saves/netMo:0;
+  const savesRate=netMo>0?saves/netMo:-1;
   const rtnAdj=inputs.riskTol==='low'?-0.01:inputs.riskTol==='high'?0.015:0;
   const adjReturn=inputs.invReturn+rtnAdj;
   const fire=fireYears(locId,inputs,cost,adjReturn);
   const minInc=minIncomeForTier(locId,tier,inputs);
 
-  // Direction vs current: compare mode-adjusted income at THIS location against the
-  // mode-adjusted income the user would actually have at their current location —
-  // not the same gross figure reused for both sides.
   const curGross=grossFor(inputs,inputs.currentLoc);
   const curMinInc=minIncomeForTier(inputs.currentLoc,tier,inputs);
   const incRatio=gross/minInc,curRatio=curGross/curMinInc;
-  let direction=incRatio>curRatio*1.15?'up':incRatio<curRatio*0.85?'down':'same';
+  const direction=incRatio>curRatio*1.15?'up':incRatio<curRatio*0.85?'down':'same';
 
   const w=inputs.weights;
   const qol=loc.qol;
   const familyScore=familyProximityScore(locId,inputs);
   const communityScore=isIndia?10:qol.community;
+  const childScore=childTransitionScore(locId,inputs);
+  const spouseScore=spouseFitScore(locId,inputs);
+  const feasibilityScore=destinationFeasibilityScore(locId,inputs);
 
-  // Financial score 0-40
-  let finScore=0;
-  if(savesRate>=0.45)finScore=40;else if(savesRate>=0.35)finScore=36;
-  else if(savesRate>=0.25)finScore=30;else if(savesRate>=0.15)finScore=22;
-  else if(savesRate>=0.05)finScore=12;else if(savesRate>=0)finScore=5;
-  if(fire!==null){if(fire<=10)finScore=Math.min(40,finScore+6);else if(fire<=20)finScore=Math.min(40,finScore+3);}
+  // Continuous financial fit. No artificial jumps at 15%, 25%, 35%, or 45%.
+  const savingsComponent=clamp(((savesRate+0.10)/0.70)*100,0,100);
   const yearsToRetire=Math.max(0,(inputs.retireAge||55)-(inputs.age||36));
-  if(fire!==null&&fire<=yearsToRetire) finScore=Math.min(40,finScore+4);
+  const fireComponent=fire===null?10:fire<=5?100:fire<=10?85:fire<=20?65:fire<=30?45:25;
+  const retirementComponent=(fire!==null&&fire<=yearsToRetire)?100:fire===null?10:55;
+  const financialFit=clamp(savingsComponent*0.65+fireComponent*0.25+retirementComponent*0.10,0,100);
 
-  // Lifestyle/QoL score 0-50
-  const wTotal=Object.values(w).reduce((a,b)=>a+b,0)||1;
-  const lsRaw=(
-    qol.safety*w.safety+qol.healthcare*w.health+qol.aqi*w.aqi+
-    qol.convenience*w.convenience+qol.wlb*w.wlb+qol.education*w.edu+
-    communityScore*w.community+familyScore*w.family+loc.visaStability*w.visa
-  )/wTotal;
-  const lsScore=lsRaw/10*50;
+  // Personal fit uses the user's stated priorities. Financial weight is handled separately.
+  const personalWeights={family:w.family,health:w.health,edu:w.edu,safety:w.safety,wlb:w.wlb,
+    community:w.community,aqi:w.aqi,convenience:w.convenience,visa:w.visa};
+  const personalTotal=Object.values(personalWeights).reduce((a,b)=>a+b,0)||1;
+  const personalRaw=(familyScore*w.family+qol.healthcare*w.health+qol.education*w.edu+
+    qol.safety*w.safety+qol.wlb*w.wlb+communityScore*w.community+qol.aqi*w.aqi+
+    qol.convenience*w.convenience+loc.visaStability*w.visa)/personalTotal;
+  let personalFit=personalRaw*10;
+  // Children and spouse are direct household constraints, so they adjust rather than hide inside a generic country score.
+  personalFit=clamp(personalFit*0.75+childScore*10*0.15+spouseScore*10*0.10,0,100);
 
-  // Risk penalty — remote work reduces visa penalty when location is India
-  const visaRisk={citizen:0,gc:4,pr_other:6,h1b:18,gc_pending:16,l1:16,oci:0};
-  let baseVR=visaRisk[inputs.visa]||8;
-  if(isRemote&&isIndia) baseVR=Math.min(baseVR,5);
-  const locVR=(10-loc.visaStability)*1.5;
-  const riskScore=clamp(baseVR+locVR,0,100);
-  const riskPenalty=riskScore*0.15;
+  const visaRisk=destinationVisaRisk(locId,inputs);
+  const realisticFit=clamp(feasibilityScore*10-visaRisk*0.55,0,100);
+  const riskScore=Math.round(clamp(visaRisk+(10-loc.visaStability)*1.2,0,100));
 
-  // Tie-breaker: a tiny savings-rate nudge (max ±0.4) so locations that land on the
-  // same whole-number score (common among the three India tiers) still separate out
-  // by a decimal instead of showing as an exact tie.
-  const tieBreak=clamp(savesRate,-0.8,0.8)*0.5;
-  const total=Math.max(0,Math.round((finScore+lsScore-riskPenalty+tieBreak)*10)/10);
+  // Finance weight now works in the intended direction. Other priorities collectively set personal weight.
+  const nonFinanceWeight=Math.max(1,Object.entries(w).filter(([k])=>k!=='finance').reduce((a,[,v])=>a+v,0));
+  const financeShare=w.finance/(w.finance+nonFinanceWeight);
+  const personalShare=1-financeShare;
+  // Realism is a guardrail, not just another lifestyle preference.
+  const total=clamp(financialFit*financeShare+personalFit*personalShare,0,100)*0.85+realisticFit*0.15;
 
-  // Migration Sentiment Score
-  const finSentiment=savesRate>=0.30?'Strong financial upside.':savesRate>=0.15?'Solid financial position.':savesRate>=0?'Tight but viable.':'Financial deficit.';
-  const qolSentiment=lsScore>=35?'Excellent quality of life match.':lsScore>=25?'Good lifestyle fit.':'Lifestyle tradeoffs required.';
-  const riskSentiment=riskScore<25?'Low risk environment.':riskScore<50?'Moderate risk — manageable.':'High risk — build contingency plans.';
+  const finSentiment=savesRate>=0.30?'Strong savings potential.':savesRate>=0.15?'Positive savings potential.':savesRate>=0?'Limited savings margin.':'Projected monthly deficit.';
+  const qolSentiment=personalFit>=75?'Strong personal fit.':personalFit>=60?'Mixed but workable personal fit.':'Major personal tradeoffs.';
+  const realismSentiment=realisticFit>=75?'Move appears realistic.':realisticFit>=50?'Move needs confirmation.':'Move is currently theoretical.';
   let workNote='';
   if(isFire){
-    workNote=` (Portfolio draw: ${fmtD(gross)}/yr${rnorBonus>0?'; RNOR shelters ≈ '+fmtD(rnorBonus)+' extra in first 2 yrs':''})`;
+    workNote=` FIRE mode is a simplified portfolio estimate${rnorBonus>0?'; estimated RNOR-period difference '+fmtD(rnorBonus):''}.`;
   } else if(isRemote){
-    workNote=locId==='portugal'?' (Remote — IFICI/NHR ~23% blended rate applied for 10-yr window.)':isIndia?' (Remote — income preserved; Indian tax applies to India-performed work from day 1.)':' (Remote — income preserved.)';
+    workNote=locId==='portugal'?' Remote income retained; temporary tax treatment is simplified.':isIndia?' Remote income retained; Indian tax applies to work performed from India.':' Remote income retained.';
   } else if(isLocal){
-    workNote=` (Local market salary: ~${Math.round((LOCAL_INCOME_MULT[locId]??0.5)*100)}% of your reported income — a rough estimate, not a salary survey.)`;
+    workNote=locId===inputs.currentLoc?' Current-location income kept exactly as entered.':` Local salary estimated from the relative market multiplier (${Math.round(((LOCAL_INCOME_MULT[locId]??0.5)/(LOCAL_INCOME_MULT[inputs.currentLoc]??1))*100)}% of current gross); replace it with a real offer when available.`;
+  } else if(inputs.work==='same'){
+    workNote=' Same salary assumed because the user selected a confirmed package.';
   }
-  const sentiment=`${finSentiment} ${qolSentiment} ${riskSentiment}${workNote}`;
+  const sentiment=`${finSentiment} ${qolSentiment} ${realismSentiment}${workNote}`;
 
-  return{total,finScore:Math.round(finScore),lsScore:Math.round(lsScore),riskScore:Math.round(riskScore),
+  return{total:Math.round(total*10)/10,financialFit,personalFit,realisticFit,
+    finScore:Math.round(financialFit*0.4),lsScore:Math.round(personalFit*0.5),riskScore,
     monthlyNet:Math.round(netMo),monthlyCost:Math.round(cost),monthlySaves:Math.round(saves),
     savesRate,fire,minInc,direction,sentiment,adjReturn,rnorBonus};
 }
-
 // ─── VALIDATION ───────────────────────────────────────────────────────────────
 function validateSelection(selected){
   const el=$('selection-error');
@@ -1142,16 +1201,18 @@ function validateSelection(selected){
 
 // ─── PRESETS ─────────────────────────────────────────────────────────────────
 const PRESETS={
-  young_it:{income:140000,networth:180000,remittance:300,work:'same',parents_loc:'india',current_country:'usa_mcol',visa_status:'h1b',family:'1',age:29,retire_age:50,horizon:'10',desired_tier:'2',school_pref:'public',health_pref:'public',income_growth:'modest',risk_tol:'med',w_finance:9,w_family:7,w_health:6,w_edu:4,w_safety:7,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:9,india_trips:4000,countries:['usa_mcol','india_metro','india_t2','uae','singapore']},
-  mid_family:{income:220000,networth:380000,remittance:500,work:'same',parents_loc:'india',current_country:'usa_mcol',visa_status:'h1b',family:'3',age:38,retire_age:55,horizon:'10',desired_tier:'3',school_pref:'private',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:8,w_health:8,w_edu:9,w_safety:8,w_wlb:6,w_community:7,w_aqi:5,w_convenience:7,w_visa:8,india_trips:5000,countries:['usa_mcol','india_metro','india_t2','uae','singapore','australia']},
-  gc_stable:{income:200000,networth:500000,remittance:600,work:'same',parents_loc:'split',current_country:'usa_mcol',visa_status:'gc',family:'3',age:42,retire_age:58,horizon:'15',desired_tier:'2',school_pref:'public',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:7,w_health:8,w_edu:8,w_safety:8,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:5,india_trips:4500,countries:['usa_mcol','india_metro','india_t2','uk','uae','australia']},
+  young_it:{income:140000,networth:180000,remittance:300,work:'local',parents_loc:'india',current_country:'usa_mcol',visa_status:'h1b',family:'1',age:29,retire_age:50,horizon:'10',desired_tier:'2',school_pref:'public',health_pref:'public',income_growth:'modest',risk_tol:'med',w_finance:9,w_family:7,w_health:6,w_edu:4,w_safety:7,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:9,india_trips:4000,countries:['usa_mcol','india_metro','india_t2','uae','singapore']},
+  mid_family:{income:220000,networth:380000,remittance:500,work:'local',parents_loc:'india',current_country:'usa_mcol',visa_status:'h1b',family:'3',age:38,retire_age:55,horizon:'10',desired_tier:'3',school_pref:'private',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:8,w_health:8,w_edu:9,w_safety:8,w_wlb:6,w_community:7,w_aqi:5,w_convenience:7,w_visa:8,india_trips:5000,countries:['usa_mcol','india_metro','india_t2','uae','singapore','australia']},
+  gc_stable:{income:200000,networth:500000,remittance:600,work:'local',parents_loc:'split',current_country:'usa_mcol',visa_status:'gc',family:'3',age:42,retire_age:58,horizon:'15',desired_tier:'2',school_pref:'public',health_pref:'private',income_growth:'modest',risk_tol:'med',w_finance:7,w_family:7,w_health:8,w_edu:8,w_safety:8,w_wlb:7,w_community:6,w_aqi:5,w_convenience:6,w_visa:5,india_trips:4500,countries:['usa_mcol','india_metro','india_t2','uk','uae','australia']},
   return_india:{income:180000,networth:450000,remittance:400,work:'local',parents_loc:'india',current_country:'usa_mcol',visa_status:'h1b',family:'3',age:40,retire_age:52,horizon:'5',desired_tier:'3',school_pref:'private',health_pref:'private',income_growth:'flat',risk_tol:'low',w_finance:7,w_family:10,w_health:7,w_edu:8,w_safety:7,w_wlb:8,w_community:10,w_aqi:5,w_convenience:9,w_visa:6,india_trips:3000,countries:['usa_mcol','india_metro','india_t2','india_small']},
   remote_worker:{income:200000,networth:280000,remittance:500,work:'remote',parents_loc:'india',current_country:'usa_mcol',visa_status:'gc',family:'2',age:34,retire_age:48,horizon:'10',desired_tier:'2',school_pref:'public',health_pref:'public',income_growth:'modest',risk_tol:'high',w_finance:9,w_family:7,w_health:6,w_edu:5,w_safety:7,w_wlb:9,w_community:6,w_aqi:7,w_convenience:7,w_visa:5,india_trips:2500,countries:['india_metro','india_t2','portugal','uae','singapore']},
   pre_fire:{income:300000,networth:900000,remittance:600,work:'remote',parents_loc:'not_factor',current_country:'usa_hcol',visa_status:'gc',family:'3',age:44,retire_age:50,horizon:'6',desired_tier:'3',school_pref:'private',health_pref:'premium',income_growth:'flat',risk_tol:'low',w_finance:10,w_family:8,w_health:8,w_edu:7,w_safety:8,w_wlb:8,w_community:7,w_aqi:6,w_convenience:8,w_visa:4,india_trips:5000,countries:['usa_hcol','india_metro','india_t2','india_small','uae','portugal']},
 };
 
 function loadPreset(key){
-  const p=PRESETS[key];if(!p)return;
+  const selected=PRESETS[key];if(!selected)return;
+  const defaults={monthly_savings:0,debt_monthly:0,edu_kids:'0',edu_target:'na',edu_years_out:10,kids_roots:'na',spouse_pref:'neutral',move_feasibility:'likely'};
+  const p={...defaults,...selected};
   Object.keys(p).forEach(k=>{
     if(k==='countries'){document.querySelectorAll('input[name="countries"]').forEach(cb=>{cb.checked=p.countries.includes(cb.value);});return;}
     if(k.startsWith('w_')){
@@ -1190,6 +1251,9 @@ function runComparison(){
   const healthPref=radioVal('health_pref')||'public';
   const familySize=radioVal('family')||'3';
   const parentsLoc=radioVal('parents_loc')||'india';
+  const kidsRoots=$('kids_roots').value||'medium';
+  const spousePref=$('spouse_pref').value||'neutral';
+  const moveFeasibility=$('move_feasibility').value||'likely';
   const igRaw=radioVal('income_growth')||'modest';
   const incomeGrowth=igRaw==='flat'?0:igRaw==='strong'?0.10:0.05;
   const riskTol=radioVal('risk_tol')||'med';
@@ -1212,7 +1276,7 @@ function runComparison(){
 
   const inputs={income,savings,invReturn,remittance,indiaTripBudget,desiredTier,visa,work,
     currentLoc,horizon,age,retireAge,weights,schoolPref,healthPref,familySize,
-    incomeGrowth,riskTol,parentsLoc,debtMonthly,eduKidsCount,eduTarget,eduYearsOut};
+    incomeGrowth,riskTol,parentsLoc,kidsRoots,spousePref,moveFeasibility,debtMonthly,eduKidsCount,eduTarget,eduYearsOut};
 
   const results={};
   selected.forEach(id=>{if(LOC[id])results[id]=scoreLocation(id,inputs);});
@@ -1254,7 +1318,7 @@ function renderSummaryCard(ranked,results,inputs){
   const famFit=id=>familyProximityScore(id,inputs);
   const bestFamily=ranked.reduce((b,id)=>famFit(id)>famFit(b)?id:b,ranked[0]);
   const biggestRisk=inputs.visa==='h1b'||inputs.visa==='l1'||inputs.visa==='gc_pending'?
-    'Your visa status creates a forced-exit risk. Your current location ties housing security to your employer.':
+    'Your current-country visa may create a forced-exit risk. Other destinations are scored from the move-feasibility answer.':
     inputs.work==='fire'?'Portfolio draw is your income — sequence-of-returns risk matters more than location.':
     'Your current savings rate determines your future options more than any single location choice.';
   el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
@@ -1274,7 +1338,7 @@ function renderSummaryCard(ranked,results,inputs){
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mid);margin-bottom:6px">🔄 Top Fit Overall</div>
       <div style="font-size:18px">${bestLoc.flag}</div>
       <div style="font-size:12px;font-weight:700;color:var(--navy);margin-top:3px">${bestLoc.name}</div>
-      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">Top fit by your inputs</div>
+      <div style="font-size:11px;color:var(--text-mid);margin-top:2px">Best balanced fit</div>
     </div>
     <div style="background:var(--amber-light);border:1px solid #F5C98A;border-radius:12px;padding:14px">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);margin-bottom:6px">⚠ Biggest Risk</div>
@@ -1283,16 +1347,24 @@ function renderSummaryCard(ranked,results,inputs){
   </div>`;
 }
 
+function fireDisplay(r,inputs){
+  if(inputs.work!=='fire')return r.fire!==null?`FIRE: ${r.fire}yr`:'FIRE: 50+yr';
+  if(r.fire===0)return 'Already FI';
+  if(r.monthlySaves<0&&r.fire!==null)return `FI in ${r.fire}y (growth > draw)`;
+  if(r.monthlySaves<0&&r.fire===null)return 'Depleting';
+  return r.fire!==null?`FI in ${r.fire}y`:'Not sustainable';
+}
+
 // ─── RENDER: TOP PICKS ────────────────────────────────────────────────────────
 function renderTopPicks(ranked,results,inputs,savingsGapNote){
   const dirLabel={up:'⬆ Lifestyle Upgrade',same:'➡ Similar Lifestyle',down:'⬇ Lifestyle Downgrade'};
   const dirClass={up:'dir-up',same:'dir-same',down:'dir-down'};
   const top=ranked.slice(0,Math.min(3,ranked.length));
-  const rankLabels=['Top fit by your inputs','Strong option','Worth considering'];
+  const rankLabels=['Best balanced fit','Strong option','Worth considering'];
   let html='';
   const modeNotes={
     fire:'FIRE mode uses a simple 4% portfolio draw as income. It does not model Roth vs 401k vs brokerage capital-gains treatment, RNOR, or treaty rules — get a drawdown plan from a CPA/CA before executing.',
-    local:'Local market salary mode auto-scales your reported income using a rough per-country multiplier (see each card). This is a planning estimate anchored to US-style professional pay, not a real salary benchmark for your role — if you already live in UAE, UK, or India, treat it as a rough comparison only.',
+    local:'Local market salary mode keeps your entered income unchanged in your current location, then scales other destinations relative to that market. It is still a rough planning estimate, not a salary quote. Replace it with a real offer when available.',
   };
   if(modeNotes[inputs.work]) html+=`<div class="notice" style="margin-bottom:12px">${modeNotes[inputs.work]}</div>`;
   const eduFund=eduMonthlySavings(inputs);
@@ -1308,11 +1380,15 @@ function renderTopPicks(ranked,results,inputs,savingsGapNote){
       <div class="pick-flag">${loc.flag}</div>
       <div class="pick-name">${loc.name}</div>
       <div class="pick-sub">${loc.sub}</div>
+      ${i===0&&r.savesRate<0?`<div style="background:#FDEDEC;color:#8E241A;border:1px solid #F1A79E;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:700;margin:8px 0 10px">Top personal fit, but this tier runs a projected ${fmtD(Math.abs(r.monthlySaves))}/month deficit. It needs a lower lifestyle tier or higher income.</div>`:''}
       <div class="pick-direction"><span class="${dirClass[r.direction]}" style="font-size:11px">${dirLabel[r.direction]}</span></div>
       <div class="pick-score-row">
-        <div class="pick-pill">Match: ${r.total.toFixed(1)}/100</div>
+        <div class="pick-pill">Balanced fit: ${r.total.toFixed(1)}/100</div>
+        <div class="pick-pill">Financial: ${r.financialFit.toFixed(0)}/100</div>
+        <div class="pick-pill">Personal: ${r.personalFit.toFixed(0)}/100</div>
+        <div class="pick-pill">Realism: ${r.realisticFit.toFixed(0)}/100</div>
         <div class="pick-pill">Saves: ${fmtPct(r.savesRate)}</div>
-        <div class="pick-pill">${r.fire!==null?'FIRE: '+r.fire+'yr':'FIRE: 50+yr'}</div>
+        <div class="pick-pill">${fireDisplay(r,inputs)}</div>
       </div>
       <div class="pick-metrics">
         <div class="pm"><div class="pm-label">Take-Home</div><div class="pm-val">${fmtK(r.monthlyNet)}/mo</div></div>
@@ -1331,7 +1407,7 @@ function renderEquivalence(ranked,results,inputs){
   const dirLabel={up:'⬆ Upgrade',same:'➡ Similar',down:'⬇ Downgrade'};
   const modeNote={
     same:' (Same-income mode: assumes comparable pay. Unrealistic for a local job in a lower-pay market.)',
-    local:' (Local market salary mode: income auto-scaled to a typical local rate for this destination.)',
+    local:' (Local market salary mode: current income is kept as entered; other destinations are scaled relative to your current market.)',
     remote:' (Remote — full income applies wherever you live.)',
     fire:' (FIRE mode — 4% portfolio draw used as income.)',
   };
@@ -1374,7 +1450,7 @@ function renderTable(ranked,results,inputs){
       <td>${fmtD(r.monthlyNet)}</td><td>${fmtD(r.monthlyCost)}</td>
       <td class="${srC}">${r.monthlySaves>=0?'+':''}${fmtD(r.monthlySaves)}</td>
       <td class="${srC}">${fmtPct(r.savesRate)}</td>
-      <td class="${frC}">${r.fire!==null?r.fire+' yrs':'50+ yrs'}</td>
+      <td class="${frC}">${fireDisplay(r,inputs).replace('FIRE: ','')}</td>
       <td class="${rkC}">${r.riskScore<30?'Low':r.riskScore<55?'Med':'High'}</td>
       <td>${fmtK(r.minInc)}/yr</td>
       <td>${dirTag[r.direction]||''}</td>
@@ -1524,11 +1600,10 @@ function renderScenarios(ranked,results,inputs,scens){
     html+=`</div><div style="height:16px"></div>`;
   }
   if(scens.return){
-    const indiaSal=inputs.income*0.40;
-    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">✈️ Return to India — Local Salary (~${fmtD(indiaSal)}/yr, ~40% of current income)</h4>
+    html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">✈️ Return to India — Destination Local Salary</h4>
     <div class="scen3">`;
     ['india_metro','india_t2','india_small'].forEach(id=>{
-      const loc=LOC[id],r=scoreLocation(id,{...inputs,income:indiaSal,work:'same'});
+      const loc=LOC[id],r=scoreLocation(id,{...inputs,work:'local'});
       const cls=r.savesRate>=0.25?'g':r.savesRate>=0.05?'a':'r';
       let supportedTier=0;
       for(let t=3;t>=0;t--){if(r.monthlySaves>=0&&getTierCost(id,t,inputs)<=r.monthlyNet*0.80){supportedTier=t;break;}}
@@ -1542,11 +1617,12 @@ function renderScenarios(ranked,results,inputs,scens){
     html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">📉 Job Loss — 6 Months Zero Income. Runway at Current Tier:</h4><div class="scen3">`;
     ranked.slice(0,6).forEach(id=>{
       const loc=LOC[id],r=results[id];
-      const runway=Math.round(inputs.savings/r.monthlyCost);
+      const burn=r.monthlyCost+permanentMonthlyExtras(id,inputs);
+      const runway=Math.round(inputs.savings/Math.max(1,burn));
       const cls=runway>=18?'g':runway>=9?'a':'r';
       html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
         <div class="sc-val">${runway} months runway</div>
-        <div class="sc-desc">At ${fmtD(r.monthlyCost)}/mo · ${fmtD(inputs.savings)} savings buffer</div></div>`;
+        <div class="sc-desc">At ${fmtD(burn)}/mo including debt, remittance and travel · ${fmtD(inputs.savings)} savings buffer</div></div>`;
     });
     html+=`</div><div style="height:16px"></div>`;
   }
@@ -1554,7 +1630,7 @@ function renderScenarios(ranked,results,inputs,scens){
     const halfInc=inputs.income*0.5;
     html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">💍 Single Income — Spouse Stops (50% drop to ${fmtD(halfInc)}/yr)</h4><div class="scen3">`;
     ranked.slice(0,6).forEach(id=>{
-      const loc=LOC[id],r=scoreLocation(id,{...inputs,income:halfInc,work:'same'});
+      const loc=LOC[id],r=scoreLocation(id,{...inputs,income:halfInc});
       const cls=r.savesRate>=0.15?'g':r.savesRate>0?'a':'r';
       html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
         <div class="sc-val">${fmtD(r.monthlyNet)}/mo net</div>
@@ -1563,14 +1639,14 @@ function renderScenarios(ranked,results,inputs,scens){
     html+=`</div><div style="height:16px"></div>`;
   }
   if(scens.health){
-    const oop={usa_hcol:44000,usa_mcol:42000,india_metro:2800,india_t2:2200,india_small:1500,uk:400,uae:7000,singapore:14000,australia:4500,germany:800,portugal:1200,canada:1500};
+    const oop={usa_hcol:19000,usa_mcol:18000,india_metro:2800,india_t2:2200,india_small:1500,uk:400,uae:7000,singapore:14000,australia:4500,germany:800,portugal:1200,canada:1500};
     html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">🏥 Health Emergency — True Out-of-Pocket for $50k Medical Event</h4><div class="scen3">`;
     ranked.slice(0,6).forEach(id=>{
       const loc=LOC[id],cost=oop[id]||8000;
       const cls=cost<=3000?'g':cost<=15000?'a':'r';
       html+=`<div class="sc ${cls}"><div class="sc-title">${loc.flag} ${loc.name}</div>
         <div class="sc-val">${fmtD(cost)} OOP</div>
-        <div class="sc-desc">${cost<=3000?'Healthcare system absorbs most.':cost<=15000?'Significant but manageable.':'Major financial shock.'}</div></div>`;
+        <div class="sc-desc">${id.startsWith('usa_')?'Employer-insured, in-network planning estimate.':cost<=3000?'Healthcare system absorbs most.':cost<=15000?'Significant but manageable.':'Major financial shock.'}</div></div>`;
     });
     html+=`</div><div style="height:16px"></div>`;
   }
@@ -1592,13 +1668,16 @@ function renderScenarios(ranked,results,inputs,scens){
 // ─── RENDER: NRI FLAGS ────────────────────────────────────────────────────────
 function renderFlags(ranked,inputs){
   const global=[
-    {l:'amber',t:'RNOR Window — What It Actually Exempts',d:'Returning NRIs get RNOR status for roughly 2-3 years. It exempts foreign PASSIVE income — interest, dividends, capital gains, foreign rental — NOT salary for work performed from India, which is taxable from day one even from a foreign employer. Time asset sales and RSU vests into the window. This alone can be worth $30-100k. Confirm timing with a CA.'},
-    {l:'red',t:'401k / IRA: The Return-to-India Trap',d:'Early withdrawal: 10% penalty + US tax + potential Indian tax. On $400k 401k, premature withdrawal could cost $120-160k. Plan Roth conversions and drawdown strategy before leaving.'},
-    {l:'amber',t:'FBAR + FATCA: Filing Never Stops',d:'US persons with foreign accounts >$10k must file FBAR annually. FATCA Form 8938 for larger foreign assets. Non-compliance: up to $10k per violation.'},
+    {l:'amber',t:'RNOR Window — What It Actually Exempts',d:'RNOR duration depends on travel and residence history. Some foreign interest, dividends, capital gains and rental income may receive different Indian tax treatment during this period. Salary for work performed from India is generally taxable in India. RSUs and employment-linked equity need separate sourcing review. Confirm dates and account treatment with a cross-border CA.'},
+    {l:'red',t:'401k / IRA: The Return-to-India Trap',d:'Early distributions may trigger a 10% US penalty, US income tax, and possible Indian reporting or tax. Account type, age, treaty position and residential status matter. Build a drawdown plan before moving.'},
+    {l:'amber',t:'FBAR + FATCA: Filing Never Stops',d:'Many US persons must file FBAR when aggregate foreign financial accounts exceed $10,000 at any point in the year. Form 8938 has separate thresholds. Filing rules and penalties depend on facts and status.'},
     {l:'green',t:'OCI Card: Get It Before You Renounce',d:'Apply for OCI before renouncing Indian citizenship. Gives near-citizen rights in India on a near-permanent basis. Do not leave this too late.'},
     {l:'amber',t:'NRE/NRO Account Structure',d:'Rental income and India earnings: NRO. Foreign remittances: NRE (tax-free interest). Repatriation from NRO requires 15CA/15CB. Set up banking architecture before any major move.'},
     {l:'blue',t:'DTAA: Double Tax Treaties',d:'India has DTAA with US, UK, UAE (limited), Singapore, Germany, Australia. Never assume automatic relief — always file in both countries and claim treaty relief explicitly.'},
   ];
+  if((inputs.visa==='citizen'||inputs.visa==='gc')&&ranked.some(id=>INDIA_IDS.includes(id))){
+    global.push({l:'red',t:'US Tax Can Continue After Moving to India',d:'US citizens remain subject to US tax on worldwide income. Green card holders generally remain US tax residents until status is formally ended under the applicable rules. RNOR may change the India side, but it does not erase US filing or tax duties. Model account-level taxes with a US-India CPA before using FIRE results.'});
+  }
   const specific=ranked.flatMap(id=>LOC[id].flags.map(f=>({...f,locFlag:LOC[id].flag,locName:LOC[id].name})));
   $('nri-flags').innerHTML=[...global,...specific].map(f=>`
     <div class="risk-item risk-${f.l}"><div class="rdot"></div>
