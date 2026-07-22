@@ -3,7 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRI Life Calculator v3.1 · Where Should I Live? · RupeeStories</title>
+<title>NRI Life Calculator v3.2 · Where Should I Live? · RupeeStories</title>
+<meta name="description" content="Free NRI planning tool: compare staying in the US vs moving to India, UAE, UK, Singapore, Canada and more. Taxes, FIRE timeline, family fit, visa risk — runs entirely in your browser, nothing is stored.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NRI Life Calculator — Where Should I Live?">
+<meta property="og:description" content="Compare 12 locations on money, family, and how realistic the move actually is. Free, no login, runs in your browser.">
+<meta property="og:url" content="https://rupeestories-ctrl.github.io/nri-life-calculator/">
+<meta property="og:image" content="https://rupeestories-ctrl.github.io/nri-life-calculator/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NRI Life Calculator — Where Should I Live?">
+<meta name="twitter:description" content="Compare 12 locations on money, family, and how realistic the move actually is. Free, no login, runs in your browser.">
+<meta name="twitter:image" content="https://rupeestories-ctrl.github.io/nri-life-calculator/og.png">
+<meta name="theme-color" content="#151739">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -204,6 +218,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .choose-body strong{color:var(--navy)}
 /* BEST-FOR */
 .best-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:700px){.summary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.summary-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.best-grid{grid-template-columns:1fr 1fr}}
 .best-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:13px}
 .best-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:5px}
@@ -346,7 +363,7 @@ canvas{width:100%!important}
           <option value="sponsor">Would require employer sponsorship or a new job</option>
           <option value="unknown">No clear visa, job or residency path yet</option>
         </select>
-        <div class="hint">Applies to destinations other than your current country and India when you already have Indian citizenship or OCI.</div></div>
+        <div class="hint">Applies to destinations other than your current country. India is treated as always feasible if your status implies an Indian passport or OCI (H-1B, L-1, GC, GC-pending, OCI).</div></div>
       <div class="field-row">
         <div class="field"><label>Your Age</label><input type="number" id="age" value="36" min="22" max="65"></div>
         <div class="field"><label>Target Retirement Age</label><input type="number" id="retire_age" value="55" min="40" max="75"></div>
@@ -579,7 +596,7 @@ canvas{width:100%!important}
 
 <div class="footnote">
   Built with 💛 for r/RupeeStories &nbsp;·&nbsp; <strong>Planning estimate, not financial, tax, legal, immigration, medical, or relocation advice.</strong> All figures are estimates using simplified effective tax models (calibrated to broad effective rates including social charges, early 2026; US HCOL is partly single-filer weighted). RNOR modeled for foreign passive income only. IFICI/NHR modeled for remote workers in Portugal. Consult a cross-border CPA / CA for your specific situation. &nbsp;·&nbsp;
-  Cost and salary figures are broad planning estimates and may lag local conditions. City, employer, school and health choices can change results materially. &nbsp;·&nbsp; v3.1
+  Cost and salary figures are broad planning estimates and may lag local conditions. City, employer, school and health choices can change results materially. &nbsp;·&nbsp; v3.2
 </div>
 </div>
 <script>
@@ -850,6 +867,7 @@ const radioVal=name=>{const el=document.querySelector(`input[name="${name}"]:che
 const fmtD=n=>(n<0?'-':'')+'$'+Math.abs(Math.round(n)).toLocaleString();
 const fmtK=n=>{const s=n<0?'-':'';const a=Math.abs(n);return a<1000?s+'$'+Math.round(a):s+'$'+Math.round(a/1000)+'k';};
 const fmtPct=n=>(n*100).toFixed(0)+'%';
+const fmtAxis=n=>{const a=Math.abs(n);const s=n<0?'-':'';return a>=1e6?s+'$'+(a/1e6).toFixed(a>=1e7?0:1)+'M':s+'$'+Math.round(a/1000)+'k';};
 const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
 const CHART_COLORS=['#151739','#D7AE43','#2E7D52','#C0392B','#1A5F9E','#B7620A','#6B3FA0','#2C7873','#C06014','#4A7C59'];
 const TIERS=['Basic','Comfortable','Premium','Luxury'];
@@ -1008,12 +1026,16 @@ function minIncomeForTier(locId,tier,inputs,savePct=0.20){
 // Year-aware FIRE simulation. Honors RNOR / IFICI windows; deficits drain the balance.
 function fireYears(locId,inputs,cost,rtn){
   const target=(cost+permanentMonthlyExtras(locId,inputs))*12*25;
-  const gross=grossFor(inputs,locId);
+  const isFire=inputs.work==='fire';
+  let gross=grossFor(inputs,locId);
   let bal=inputs.savings;
   for(let y=0;y<=50;y++){
     if(bal>=target)return y;
+    if(y>0&&!isFire)gross*=(1+(inputs.incomeGrowth||0));
     const netMo=netMoAt(locId,inputs,y+1,gross);
-    bal=bal*(1+rtn)+(netMo-cost)*12;
+    // In FIRE mode the 4% draw comes OUT of the portfolio — subtract the gross draw
+    // so spending actually reduces the balance instead of being free phantom income.
+    bal=bal*(1+rtn)+(netMo-cost)*12-(isFire?gross:0);
     if(bal<=0)return null;
   }
   return null;
@@ -1025,10 +1047,12 @@ function netWorthTrajectory(locId,inputs,cost,rtn,years){
   const arr=[inputs.savings];
   let bal=inputs.savings;
   let gross=grossFor(inputs,locId);
+  const isFire=inputs.work==='fire';
   for(let y=1;y<=years;y++){
-    if(y>1&&inputs.work!=='fire')gross*=(1+(inputs.incomeGrowth||0));
+    if(y>1&&!isFire)gross*=(1+(inputs.incomeGrowth||0));
     const netMo=netMoAt(locId,inputs,y,gross);
-    bal=Math.max(0,bal*(1+rtn)+(netMo-cost)*12);
+    // FIRE: the 4% draw is withdrawn FROM the portfolio, not external income.
+    bal=Math.max(0,bal*(1+rtn)+(netMo-cost)*12-(isFire?gross:0));
     arr.push(Math.round(bal));
   }
   return arr;
@@ -1070,10 +1094,14 @@ function familyProximityScore(locId,inputs){
 }
 
 // ─── SCORING ENGINE ───────────────────────────────────────────────────────────
+// Statuses that imply an automatic right to live in India: Indian passport holders
+// (H-1B, L-1/L-2, GC, GC-pending are almost always Indian citizens) plus OCI.
+// 'citizen' (naturalized) kept — most in this audience hold OCI; the card is routine.
+const INDIA_RIGHT=['oci','citizen','h1b','l1','gc','gc_pending'];
 function destinationFeasibilityScore(locId,inputs){
   if(locId===inputs.currentLoc) return 10;
   const isIndia=INDIA_IDS.includes(locId);
-  if(isIndia && ['oci','citizen'].includes(inputs.visa)) return 10;
+  if(isIndia && INDIA_RIGHT.includes(inputs.visa)) return 10;
   const map={confirmed:9,likely:7,sponsor:4,unknown:2};
   return map[inputs.moveFeasibility]||7;
 }
@@ -1099,7 +1127,7 @@ function destinationVisaRisk(locId,inputs){
     const current={citizen:0,gc:5,pr_other:6,h1b:22,gc_pending:20,l1:20,oci:4};
     return current[inputs.visa]??10;
   }
-  if(INDIA_IDS.includes(locId) && ['oci','citizen'].includes(inputs.visa)) return 2;
+  if(INDIA_IDS.includes(locId) && INDIA_RIGHT.includes(inputs.visa)) return 2;
   const feasibility={confirmed:5,likely:12,sponsor:28,unknown:42};
   return feasibility[inputs.moveFeasibility]??12;
 }
@@ -1321,7 +1349,7 @@ function renderSummaryCard(ranked,results,inputs){
     'Your current-country visa may create a forced-exit risk. Other destinations are scored from the move-feasibility answer.':
     inputs.work==='fire'?'Portfolio draw is your income — sequence-of-returns risk matters more than location.':
     'Your current savings rate determines your future options more than any single location choice.';
-  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+  el.innerHTML=`<div class="summary-grid">
     <div style="background:var(--green-light);border:1px solid #A8D5BB;border-radius:12px;padding:14px">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green);margin-bottom:6px">💰 Best for Wealth</div>
       <div style="font-size:18px">${LOC[bestWealth].flag}</div>
@@ -1537,7 +1565,7 @@ function renderWealthChart(ranked,results,inputs){
     ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+cw,y);ctx.stroke();
     const v=maxV-(g/4)*(maxV-minV);
     ctx.fillStyle='#8891A8';ctx.font='10px DM Sans';ctx.textAlign='right';
-    ctx.fillText('$'+Math.round(v/1000)+'k',PAD.left-5,y+4);
+    ctx.fillText(fmtAxis(v),PAD.left-5,y+4);
   }
   ctx.fillStyle='#8891A8';ctx.font='10px DM Sans';ctx.textAlign='center';
   for(let y=0;y<=inputs.horizon;y+=Math.ceil(inputs.horizon/5)){
@@ -1552,7 +1580,7 @@ function renderWealthChart(ranked,results,inputs){
     ctx.stroke();
     const last=data[data.length-1],lx=xPos(data.length-1),ly=yPos(last);
     ctx.fillStyle=color;ctx.font='bold 10px DM Mono';ctx.textAlign='left';
-    ctx.fillText('$'+Math.round(last/1000)+'k',lx+3,ly+4);
+    ctx.fillText(fmtAxis(last),lx+3,ly+4);
   });
   const growthNote=inputs.incomeGrowth>0?` · Income grows ${Math.round(inputs.incomeGrowth*100)}%/yr`:'';
   $('wealth-legend').innerHTML=ranked.map((id,i)=>`<span style="display:inline-flex;align-items:center;gap:4px">
@@ -1652,9 +1680,13 @@ function renderScenarios(ranked,results,inputs,scens){
   }
   if(scens.currency){
     html+=`<h4 style="font-family:'Playfair Display',serif;font-size:15px;margin:0 0 10px;color:var(--navy)">💱 Currency Shock — USD Strengthens 20% vs INR (₹100/$ scenario)</h4><div class="scen3">`;
-    [['india_metro','INR savings lose 20% USD value. Remittances buy more in India but USD savings shrink in INR terms.','r'],
-     ['uae','AED is pegged to USD. No direct currency impact. Your savings are fully protected.','g'],
-     ['usa_mcol','You ARE the USD. Strongest possible position in a USD-strength scenario.','g']].forEach(([id,desc,cls])=>{
+    const fxProfile=id=>{
+      if(INDIA_IDS.includes(id))return['INR earnings/savings lose 20% USD value. Remittances from abroad buy more, but INR-side wealth shrinks in USD terms.','r'];
+      if(id==='uae')return['AED is pegged to USD. No direct currency impact. Your savings are fully protected.','g'];
+      if(id.startsWith('usa_'))return['You ARE the USD. Strongest possible position in a USD-strength scenario.','g'];
+      return['Local currency exposure vs USD is real but historically smaller than INR swings. Mixed position.','a'];
+    };
+    ranked.slice(0,6).map(id=>{const[desc,cls]=fxProfile(id);return[id,desc,cls];}).forEach(([id,desc,cls])=>{
       if(!LOC[id])return;
       html+=`<div class="sc ${cls}"><div class="sc-title">${LOC[id].flag} ${LOC[id].name}</div>
         <div class="sc-val">${cls==='g'?'Protected':'−20% USD value'}</div>
