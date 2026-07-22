@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRI Life Calculator v3.3.1 · Where Should I Live? · RupeeStories</title>
+<title>NRI Life Calculator v3.4 · Where Should I Live? · RupeeStories</title>
 <meta name="description" content="Free NRI planning tool: compare staying where you are with moving to India, UAE, UK, Singapore, Canada and other destinations. Taxes, FIRE timeline, family fit, visa risk – runs entirely in your browser, nothing is stored.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="NRI Life Calculator – Where Should I Live?">
@@ -232,7 +232,7 @@ canvas{width:100%!important}
 </style>
 
 <style>
-/* v3.3.1 usability, accessibility, and report overrides */
+/* v3.4 usability, accessibility, and report overrides */
 html{scroll-behavior:smooth;scroll-padding-top:64px}
 button,input,select{font:inherit}
 button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid rgba(215,174,67,.55);outline-offset:3px}
@@ -279,6 +279,34 @@ canvas{max-width:100%!important}
   .picks-row,.summary-grid,.equiv-grid,.qol-grid,.hc-grid,.best-grid,.scen3{grid-template-columns:repeat(2,1fr)}
   canvas{max-height:180px}.footnote{font-size:8.5pt}.pick-card{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+</style>
+
+<style>
+/* COLLEGE PLANNING */
+.college-toolbar{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.college-child-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.college-child-card{border:1.5px solid var(--border);border-radius:14px;padding:16px;background:var(--cream);position:relative}
+.college-child-card[hidden]{display:none!important}
+.college-child-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.college-child-title span{font-family:'DM Sans',sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light)}
+.college-input-summary{margin-top:14px;background:var(--blue-light);border:1px solid #9FC4E8;border-radius:12px;padding:12px 14px;font-size:12px;color:var(--text-mid)}
+.college-input-summary strong{color:var(--navy)}
+.college-results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.college-result-card{border:1.5px solid var(--border);border-radius:14px;padding:16px;background:#fff}
+.college-result-card.good-plan{border-color:#A8D5BB;background:var(--green-light)}
+.college-result-card.gap-plan{border-color:#F5C98A;background:var(--amber-light)}
+.college-result-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px}
+.college-result-head strong{font-size:14px;color:var(--navy)}
+.college-status{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.college-status.ok{background:#D7EEDF;color:var(--green)}
+.college-status.gap{background:#FBE2BE;color:var(--amber)}
+.college-metric{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid rgba(21,23,57,.08);font-size:12px}
+.college-metric:last-child{border-bottom:none}
+.college-metric span{color:var(--text-mid)}
+.college-metric strong{font-family:'DM Mono',monospace;color:var(--navy);text-align:right}
+@media(max-width:850px){.college-toolbar,.college-child-grid,.college-results-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.college-child-card{padding:14px}.college-toolbar{gap:8px}}
+@media print{.college-child-grid{grid-template-columns:1fr 1fr}.college-results-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -362,8 +390,8 @@ canvas{max-width:100%!important}
           <option value="germany">Germany (Berlin/Munich)</option>
           <option value="portugal">Portugal (Lisbon/Porto)</option>
           <option value="canada">Canada (Toronto/Vancouver)</option>
-          <option value="india_metro">India – Metro (Delhi/Bangalore/Mumbai/Hyderabad/Chennai)</option>
-          <option value="india_t2">India – Tier 2 (Pune/Kochi/Nagpur/Ahmedabad/Jaipur/Visakapatnam)</option>
+          <option value="india_metro">India – Metro (Bangalore/Mumbai/Hyderabad)</option>
+          <option value="india_t2">India – Tier 2 (Pune/Kochi/Chennai)</option>
           <option value="india_small">India – Small City / Hometown</option>
         </select></div>
       <div class="field"><label>Immigration Status</label>
@@ -504,29 +532,87 @@ canvas{max-width:100%!important}
       </div>
     </div>
     <div class="card card-full">
-      <div class="sec-hdr"><div class="sec-icon">🎓</div><div><h3>Children's Higher Education Fund</h3><p>Optional. A future cost most calculators ignore entirely – set to "Not applicable" to skip.</p></div></div>
-      <div class="section-grid" style="margin-top:0">
-        <div class="field"><label>Kids Needing College Funding</label>
+      <div class="sec-hdr"><div class="sec-icon">🎓</div><div><h3>College and 529 Planning</h3><p>Optional. Enter education accounts separately so they are not counted twice as retirement money and college money.</p></div></div>
+      <div class="college-toolbar">
+        <div class="field"><label>Children Needing College Funding</label>
           <div class="radio-group">
             <label class="radio-option"><input type="radio" name="edu_kids" value="0" checked><span>0</span></label>
             <label class="radio-option"><input type="radio" name="edu_kids" value="1"><span>1</span></label>
             <label class="radio-option"><input type="radio" name="edu_kids" value="2"><span>2</span></label>
-            <label class="radio-option"><input type="radio" name="edu_kids" value="3"><span>3+</span></label>
-          </div></div>
-        <div class="field"><label>Target Education Path (Per Child)</label>
-          <select id="edu_target">
-            <option value="na" selected>Not applicable / no kids</option>
-            <option value="local_public">Local public university (low-cost)</option>
-            <option value="india_private_engg_med">India private engineering / medical</option>
-            <option value="uk_australia">UK / Australia international</option>
-            <option value="us_public_instate">US public, in-state</option>
-            <option value="us_public_outofstate">US public, out-of-state</option>
-            <option value="us_private">US private university</option>
-          </select>
-          <div class="hint">Rough total cost in today's dollars for a 4-year degree – not a specific school's quote.</div></div>
-        <div class="field"><label>Years Until Oldest Starts College</label>
-          <input type="number" id="edu_years_out" value="10" min="0" max="20"></div>
+            <label class="radio-option"><input type="radio" name="edu_kids" value="3"><span>3</span></label>
+          </div>
+          <div class="hint">Each child gets a separate balance, college date, target, and contribution.</div></div>
+        <div class="field"><label>College Contribution Method</label>
+          <div class="radio-group" style="flex-direction:column">
+            <label class="radio-option"><input type="radio" name="edu_contrib_method" value="current" checked><span>Use what I currently contribute</span></label>
+            <label class="radio-option"><input type="radio" name="edu_contrib_method" value="required"><span>Calculate what I need to contribute</span></label>
+          </div>
+          <div class="hint">The calculated option estimates the monthly amount needed for each child after existing balances grow.</div></div>
+        <div class="field"><label>Education Balances Included in Step 1 Net Worth?</label>
+          <div class="radio-group" style="flex-direction:column">
+            <label class="radio-option"><input type="radio" name="edu_in_networth" value="no" checked><span>No, they were entered separately</span></label>
+            <label class="radio-option"><input type="radio" name="edu_in_networth" value="yes"><span>Yes, subtract them from FIRE assets</span></label>
+          </div>
+          <div class="hint">Choose Yes when your Step 1 net worth includes these 529 or UTMA balances.</div></div>
       </div>
+
+      <div id="college-child-fields" class="college-child-grid">
+        <div class="college-child-card" id="college-child-1" hidden>
+          <div class="college-child-title">Child 1 <span>Separate plan</span></div>
+          <div class="field"><label>Education Target</label><select id="edu_target_1">
+            <option value="local_public">Local public university</option><option value="india_private_engg_med">India private engineering / medical</option>
+            <option value="uk_australia">UK / Australia international</option><option value="us_public_instate" selected>US public, in-state</option>
+            <option value="us_public_outofstate">US public, out-of-state</option><option value="us_private">US private university</option>
+          </select></div>
+          <div class="field-row">
+            <div class="field"><label>Existing 529 Balance</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_529_1" value="0" min="0" inputmode="decimal"></div></div>
+            <div class="field"><label>UTMA / Other College Assets</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_utma_1" value="0" min="0" inputmode="decimal"></div></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Years Until College</label><input type="number" id="edu_years_1" value="8" min="0" max="25"></div>
+            <div class="field"><label>Share Parents Will Fund</label><div class="prefix-wrap"><input type="number" id="edu_fund_pct_1" value="100" min="0" max="100"><span class="prefix" style="left:auto;right:11px">%</span></div></div>
+          </div>
+          <div class="field current-contrib-field"><label>Current Monthly 529 / College Contribution</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_current_1" value="0" min="0" inputmode="decimal"></div></div>
+        </div>
+
+        <div class="college-child-card" id="college-child-2" hidden>
+          <div class="college-child-title">Child 2 <span>Separate plan</span></div>
+          <div class="field"><label>Education Target</label><select id="edu_target_2">
+            <option value="local_public">Local public university</option><option value="india_private_engg_med">India private engineering / medical</option>
+            <option value="uk_australia">UK / Australia international</option><option value="us_public_instate" selected>US public, in-state</option>
+            <option value="us_public_outofstate">US public, out-of-state</option><option value="us_private">US private university</option>
+          </select></div>
+          <div class="field-row">
+            <div class="field"><label>Existing 529 Balance</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_529_2" value="0" min="0" inputmode="decimal"></div></div>
+            <div class="field"><label>UTMA / Other College Assets</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_utma_2" value="0" min="0" inputmode="decimal"></div></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Years Until College</label><input type="number" id="edu_years_2" value="12" min="0" max="25"></div>
+            <div class="field"><label>Share Parents Will Fund</label><div class="prefix-wrap"><input type="number" id="edu_fund_pct_2" value="100" min="0" max="100"><span class="prefix" style="left:auto;right:11px">%</span></div></div>
+          </div>
+          <div class="field current-contrib-field"><label>Current Monthly 529 / College Contribution</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_current_2" value="0" min="0" inputmode="decimal"></div></div>
+        </div>
+
+        <div class="college-child-card" id="college-child-3" hidden>
+          <div class="college-child-title">Child 3 <span>Separate plan</span></div>
+          <div class="field"><label>Education Target</label><select id="edu_target_3">
+            <option value="local_public">Local public university</option><option value="india_private_engg_med">India private engineering / medical</option>
+            <option value="uk_australia">UK / Australia international</option><option value="us_public_instate" selected>US public, in-state</option>
+            <option value="us_public_outofstate">US public, out-of-state</option><option value="us_private">US private university</option>
+          </select></div>
+          <div class="field-row">
+            <div class="field"><label>Existing 529 Balance</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_529_3" value="0" min="0" inputmode="decimal"></div></div>
+            <div class="field"><label>UTMA / Other College Assets</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_utma_3" value="0" min="0" inputmode="decimal"></div></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Years Until College</label><input type="number" id="edu_years_3" value="15" min="0" max="25"></div>
+            <div class="field"><label>Share Parents Will Fund</label><div class="prefix-wrap"><input type="number" id="edu_fund_pct_3" value="100" min="0" max="100"><span class="prefix" style="left:auto;right:11px">%</span></div></div>
+          </div>
+          <div class="field current-contrib-field"><label>Current Monthly 529 / College Contribution</label><div class="prefix-wrap"><span class="prefix">$</span><input type="number" id="edu_current_3" value="0" min="0" inputmode="decimal"></div></div>
+        </div>
+      </div>
+      <div id="college-input-summary" class="college-input-summary"><strong>No college plan selected.</strong></div>
+      <div class="hint" style="margin-top:8px">Costs are broad totals in today's dollars. The model assumes four annual college withdrawals and lets the remaining education balance keep growing during college. 529 and UTMA balances are used only for education planning.</div>
     </div>
   </div>
 </div>
@@ -579,6 +665,7 @@ canvas{max-width:100%!important}
     <a href="#r-picks">Top Picks</a>
     <a href="#r-equiv">Lifestyle Equiv.</a>
     <a href="#r-table">Snapshot</a>
+    <a href="#r-college">College Plan</a>
     <a href="#r-qol">QoL Scores</a>
     <a href="#r-hidden">Hidden Costs</a>
     <a href="#r-wealth">Wealth Chart</a>
@@ -606,9 +693,17 @@ canvas{max-width:100%!important}
 
     <!-- SNAPSHOT TABLE -->
     <div class="card card-full" id="r-table">
-      <div class="sec-hdr"><div class="sec-icon">📊</div><div><h3>Monthly Financial Snapshot</h3><p>Post-tax income, costs, savings, FIRE timeline, and direction vs today</p></div></div>
+      <div class="sec-hdr"><div class="sec-icon">📊</div><div><h3>Monthly Financial Snapshot</h3><p>Post-tax income, fixed commitments, lifestyle cost, cash flow, FIRE timeline, and direction vs today</p></div></div>
       <div style="overflow-x:auto"><table class="metrics-table" id="snap-table"></table></div>
-      <p class="hint" style="margin-top:8px;text-align:center">FIRE = years to cover lifestyle cost + remittances + India trips + debt forever, at 25× annual expenses (a temporary education fund is excluded from this target since it ends once built – but still reduces monthly savings). In FIRE mode with RNOR selected, headline take-home, savings, and minimum-income figures use the first year after the RNOR window. The temporary RNOR benefit is shown separately. The Equivalence panel uses the same headline year.</p>
+      <p class="hint" style="margin-top:8px;text-align:center">Fixed commitments include remittances, India trips, debt, and the selected college contribution method. FIRE excludes temporary college contributions and uses retirement-planning assets after any education-account adjustment. In FIRE mode with RNOR selected, all headline panels use the first year after the RNOR window.</p>
+    </div>
+
+    <!-- COLLEGE PLAN -->
+    <div class="card card-full" id="r-college" style="display:none">
+      <div class="sec-hdr"><div class="sec-icon">🎓</div><div><h3>College Funding Plan</h3><p>529 and UTMA balances, projected funding at college start, and the monthly amount used in cash flow</p></div></div>
+      <div id="college-plan-summary" class="notice"></div>
+      <div id="college-results-grid" class="college-results-grid"></div>
+      <p class="hint" style="margin-top:10px">Education balances are kept separate from retirement projections. A surplus stays in the education plan and is not automatically treated as retirement money.</p>
     </div>
 
     <!-- QOL SCORES -->
@@ -630,10 +725,10 @@ canvas{max-width:100%!important}
 
     <!-- WEALTH TRAJECTORY -->
     <div class="card card-full" id="r-wealth">
-      <div class="sec-hdr"><div class="sec-icon">📈</div><div><h3>Wealth Trajectory</h3><p>Projected net worth over your time horizon in each location</p></div></div>
-      <canvas id="wealthChart" height="200" role="img" aria-label="Projected net worth by location over the selected time horizon"></canvas>
+      <div class="sec-hdr"><div class="sec-icon">📈</div><div><h3>Retirement Asset Trajectory</h3><p>Projected retirement-planning assets over your time horizon in each location</p></div></div>
+      <canvas id="wealthChart" height="200" role="img" aria-label="Projected retirement-planning assets by location over the selected time horizon"></canvas>
       <div id="wealth-legend" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:10px;font-size:12px;color:var(--text-mid)"></div>
-      <p class="hint" style="text-align:center;margin-top:6px">Shown in today's dollars. Remittances, India trips, debt, and temporary college contributions are deducted. RNOR and IFICI are applied only when you select and confirm those assumptions.</p>
+      <p class="hint" style="text-align:center;margin-top:6px">Shown in today's dollars. Education-account balances are excluded when you say they were included in Step 1 net worth. Remittances, India trips, debt, and temporary college contributions are deducted. Education accounts are kept separate from retirement assets. RNOR and IFICI are applied only when you select and confirm those assumptions.</p>
     </div>
 
     <!-- BEST FOR -->
@@ -667,7 +762,7 @@ canvas{max-width:100%!important}
 <div class="footnote">
   Built for r/RupeeStories. <strong>Planning estimate only, not financial, tax, legal, immigration, medical, or relocation advice.</strong>
   Location costs, salary ratios, quality scores, taxes, and scenario costs are broad author-maintained estimates dated <span id="data-version-label">July 22, 2026</span>.
-  Results use simplified effective tax rates and today's-dollar projections. City, household, employer, school, insurance, account type, treaty position, and residence history can change the result. Review any move with the right licensed advisor. · v3.3.1
+  Results use simplified effective tax rates and today's-dollar projections. City, household, employer, school, insurance, account type, treaty position, and residence history can change the result. Review any move with the right licensed advisor. · v3.4
 </div>
 </div>
 <script>
@@ -944,7 +1039,7 @@ const CHART_COLORS=['#151739','#D7AE43','#2E7D52','#C0392B','#1A5F9E','#B7620A',
 const TIERS=['Basic','Comfortable','Premium','Luxury'];
 const INDIA_IDS=['india_metro','india_t2','india_small'];
 const DATA_VERSION='2026-07-22';
-const STORAGE_KEY='nriLifeV33';
+const STORAGE_KEY='nriLifeV34';
 let LAST_RUN=null;
 
 // ─── FAMILY MULTIPLIERS ───────────────────────────────────────────────────────
@@ -991,10 +1086,9 @@ function grossFor(inputs,locId){
   return base;
 }
 
-// Per-child total cost (today's dollars, USD) for common education targets NRIs plan for.
-// Rough figures, not a specific-school quote – the UI says so.
+// Per-child total cost (today's dollars, USD) for common education targets.
+// These are broad planning estimates, not a school quote.
 const EDU_PRESETS={
-  na:0,
   local_public:15000,
   india_private_engg_med:60000,
   uk_australia:160000,
@@ -1003,29 +1097,89 @@ const EDU_PRESETS={
   us_private:320000,
 };
 const EDU_PRESETS_LABEL={
-  na:'education', local_public:'local public university',
+  local_public:'local public university',
   india_private_engg_med:'India private engineering/medical',
-  uk_australia:'UK/Australia international', us_public_instate:'US public in-state',
-  us_public_outofstate:'US public out-of-state', us_private:'US private university',
+  uk_australia:'UK/Australia international',
+  us_public_instate:'US public in-state',
+  us_public_outofstate:'US public out-of-state',
+  us_private:'US private university',
 };
 
-// Required monthly contribution to hit a future per-child education cost, using a
-// standard sinking-fund (future-value-of-annuity) formula so it accounts for
-// investment growth between now and when the money is needed – not a flat
-// division of cost by months, which would overstate what's needed.
-function eduMonthlySavings(inputs){
-  const perChild=EDU_PRESETS[inputs.eduTarget]||0;
-  const kids=inputs.eduKidsCount||0;
-  if(perChild<=0||kids<=0)return 0;
-  const totalNeeded=perChild*kids;
-  const months=Math.max(12,(inputs.eduYearsOut??10)*12);
-  const rMonthly=(Number.isFinite(inputs.invReturn)?inputs.invReturn:0.05)/12;
-  if(rMonthly<=0)return totalNeeded/months;
-  // FV of annuity: totalNeeded = payment * (((1+r)^n - 1) / r)  →  solve for payment
-  const factor=(Math.pow(1+rMonthly,months)-1)/rMonthly;
-  return totalNeeded/factor;
+function educationChildren(inputs){return Array.isArray(inputs.eduChildren)?inputs.eduChildren:[];}
+function educationAssetsTotal(inputs){
+  return educationChildren(inputs).reduce((sum,c)=>sum+Math.max(0,c.balance529||0)+Math.max(0,c.balanceUtma||0),0);
 }
-
+function collegeTargetForChild(child){
+  return (EDU_PRESETS[child.target]||0)*clamp((child.fundPct??100)/100,0,1);
+}
+// Four annual withdrawals, first at college start. Because the projection uses a
+// real return, all costs and balances remain in today's dollars.
+function balanceNeededAtCollegeStart(child,inputs){
+  const total=collegeTargetForChild(child);
+  if(total<=0)return 0;
+  const annual=total/4;
+  const r=clamp(Number.isFinite(inputs.invReturn)?inputs.invReturn:0.05,0,0.12);
+  let needed=0;
+  for(let y=0;y<4;y++)needed+=annual/Math.pow(1+r,y);
+  return needed;
+}
+function educationMonths(child){return Math.max(12,Math.round(Math.max(0,child.yearsOut||0)*12));}
+function contributionFV(monthly,months,rMonthly){
+  if(monthly<=0)return 0;
+  if(rMonthly<=0)return monthly*months;
+  return monthly*((Math.pow(1+rMonthly,months)-1)/rMonthly);
+}
+function requiredMonthlyForChild(child,inputs){
+  const needed=balanceNeededAtCollegeStart(child,inputs);
+  if(needed<=0)return 0;
+  const months=educationMonths(child);
+  const rMonthly=clamp(Number.isFinite(inputs.invReturn)?inputs.invReturn:0.05,0,0.12)/12;
+  const existing=Math.max(0,child.balance529||0)+Math.max(0,child.balanceUtma||0);
+  const futureExisting=existing*Math.pow(1+rMonthly,months);
+  const gap=Math.max(0,needed-futureExisting);
+  if(gap<=0)return 0;
+  if(rMonthly<=0)return gap/months;
+  const factor=(Math.pow(1+rMonthly,months)-1)/rMonthly;
+  return gap/factor;
+}
+function contributionUsedForChild(child,inputs){
+  return inputs.eduContributionMethod==='required'
+    ? requiredMonthlyForChild(child,inputs)
+    : Math.max(0,child.currentMonthly||0);
+}
+function projectedEducationAtStart(child,inputs){
+  const months=educationMonths(child);
+  const rMonthly=clamp(Number.isFinite(inputs.invReturn)?inputs.invReturn:0.05,0,0.12)/12;
+  const existing=Math.max(0,child.balance529||0)+Math.max(0,child.balanceUtma||0);
+  const monthly=contributionUsedForChild(child,inputs);
+  return existing*Math.pow(1+rMonthly,months)+contributionFV(monthly,months,rMonthly);
+}
+function educationPlan(inputs){
+  const children=educationChildren(inputs).map((child,index)=>{
+    const needed=balanceNeededAtCollegeStart(child,inputs);
+    const requiredMonthly=requiredMonthlyForChild(child,inputs);
+    const contributionUsed=contributionUsedForChild(child,inputs);
+    const projected=projectedEducationAtStart(child,inputs);
+    const gap=needed-projected;
+    return{...child,index:index+1,targetTotal:collegeTargetForChild(child),neededAtStart:needed,
+      requiredMonthly,contributionUsed,projectedAtStart:projected,gap};
+  });
+  return{
+    children,
+    totalAssets:educationAssetsTotal(inputs),
+    totalCurrentMonthly:children.reduce((s,c)=>s+Math.max(0,c.currentMonthly||0),0),
+    totalRequiredMonthly:children.reduce((s,c)=>s+c.requiredMonthly,0),
+    totalContributionUsed:children.reduce((s,c)=>s+c.contributionUsed,0),
+    totalGap:children.reduce((s,c)=>s+Math.max(0,c.gap),0),
+    totalSurplus:children.reduce((s,c)=>s+Math.max(0,-c.gap),0),
+  };
+}
+function educationMonthlyAtYear(inputs,year=1){
+  return educationPlan(inputs).children.reduce((sum,c)=>{
+    const fundingYears=Math.max(1,Math.ceil(Math.max(0,c.yearsOut||0)));
+    return sum+(year<=fundingYears?c.contributionUsed:0);
+  },0);
+}
 // India trips: scale the user's budget (set from their current location) to each
 // destination's typical trip cost. Living in India → $0.
 function tripCostFor(locId,inputs){
@@ -1046,8 +1200,7 @@ function tripCostFor(locId,inputs){
 // education sinking-fund contribution (see eduMonthlySavings below).
 function monthlyExtras(locId,inputs,year=1){
   const trips=tripCostFor(locId,inputs);
-  const fundingYears=Math.max(1,Number.isFinite(inputs.eduYearsOut)?inputs.eduYearsOut:10);
-  const educationContribution=year<=fundingYears?eduMonthlySavings(inputs):0;
+  const educationContribution=educationMonthlyAtYear(inputs,year);
   return Math.max(0,inputs.remittance||0)+trips/12+Math.max(0,inputs.debtMonthly||0)+educationContribution;
 }
 
@@ -1073,9 +1226,12 @@ function taxRateFor(locId,inputs,year,gross){
   return clamp(rate,0,0.65);
 }
 
-function netMoAt(locId,inputs,year,gross){
+function postTaxMoAt(locId,inputs,year,gross){
   const rate=taxRateFor(locId,inputs,year,gross);
-  return (Math.max(0,gross)*(1-rate))/12-monthlyExtras(locId,inputs,year);
+  return (Math.max(0,gross)*(1-rate))/12;
+}
+function netMoAt(locId,inputs,year,gross){
+  return postTaxMoAt(locId,inputs,year,gross)-monthlyExtras(locId,inputs,year);
 }
 
 // ─── FINANCIAL ENGINE ─────────────────────────────────────────────────────────
@@ -1157,9 +1313,10 @@ function netWorthTrajectory(locId,inputs,cost,rtn,years){
 function lifestyleEquivalence(currentLocId,targetLocId,currentIncome,desiredTier,inputs){
   const headlineYear=headlineYearFor(inputs);
   const curGross=grossFor(inputs,currentLocId);
+  const curPostTax=postTaxMoAt(currentLocId,inputs,headlineYear,curGross);
   const curNet=netMoAt(currentLocId,inputs,headlineYear,curGross);
   const curCost=getTierCost(currentLocId,desiredTier,inputs);
-  const curSavingsRate=curNet>0?(curNet-curCost)/curNet:0;
+  const curSavingsRate=curPostTax>0?(curNet-curCost)/curPostTax:0;
   const tgtMinIncome=minIncomeForTier(targetLocId,desiredTier,inputs,Math.max(0.10,curSavingsRate));
   const tgtGross=grossFor(inputs,targetLocId);
   const tgtActualNet=netMoAt(targetLocId,inputs,headlineYear,tgtGross);
@@ -1231,7 +1388,9 @@ function scoreLocation(locId,inputs){
   const gross=grossFor(inputs,locId);
 
   const headlineYear=headlineYearFor(inputs);
-  const netMo=netMoAt(locId,inputs,headlineYear,gross);
+  const postTaxMo=postTaxMoAt(locId,inputs,headlineYear,gross);
+  const fixedCommitments=monthlyExtras(locId,inputs,headlineYear);
+  const netMo=postTaxMo-fixedCommitments;
   let rnorBonus=0;
   if(isIndia&&isFire&&(inputs.rnorYears||0)>0){
     const noRnor={...inputs,rnorYears:0};
@@ -1241,7 +1400,7 @@ function scoreLocation(locId,inputs){
   const tier=inputs.desiredTier;
   const cost=getTierCost(locId,tier,inputs);
   const saves=netMo-cost;
-  const savesRate=netMo>0?saves/netMo:-1;
+  const savesRate=postTaxMo>0?saves/postTaxMo:-1;
   const rtnAdj=inputs.riskTol==='low'?-0.01:inputs.riskTol==='high'?0.01:0;
   const adjReturn=clamp(inputs.invReturn+rtnAdj,0.01,0.09);
   const fire=fireYears(locId,inputs,cost,adjReturn);
@@ -1313,7 +1472,7 @@ function scoreLocation(locId,inputs){
 
   return{total:Math.round(total*10)/10,financialFit,personalFit,realisticFit,
     finScore:Math.round(financialFit*0.4),lsScore:Math.round(personalFit*0.5),riskScore,
-    grossAnnual:Math.round(gross),monthlyNet:Math.round(netMo),monthlyCost:Math.round(cost),monthlySaves:Math.round(saves),
+    grossAnnual:Math.round(gross),postTaxMonthly:Math.round(postTaxMo),fixedCommitments:Math.round(fixedCommitments),monthlyNet:Math.round(netMo),monthlyCost:Math.round(cost),monthlySaves:Math.round(saves),
     savesRate,fire,minInc,direction,sentiment,adjReturn,rnorBonus,
     projectedEndWealth,savingsComponent,fireComponent,retirementComponent};
 }
@@ -1359,9 +1518,21 @@ const PRESETS={
   pre_fire:{income:300000,networth:900000,remittance:600,work:'remote',parents_loc:'not_factor',current_country:'usa_hcol',visa_status:'gc',family:'3',kids_roots:'high',edu_kids:'1',edu_target:'us_private',edu_years_out:4,age:44,retire_age:50,horizon:'5',desired_tier:'3',school_pref:'private',health_pref:'premium',income_growth:'flat',risk_tol:'low',w_finance:10,w_family:8,w_health:8,w_edu:7,w_safety:8,w_wlb:8,w_community:7,w_aqi:6,w_convenience:8,w_visa:4,india_trips:5000,countries:['usa_hcol','india_metro','india_t2','india_small','uae','portugal']},
 };
 
+function applyLegacyPresetEducation(p){
+  const kids=clamp(parseInt(p.edu_kids||0),0,3);
+  for(let i=1;i<=3;i++){
+    const target=$(`edu_target_${i}`),years=$(`edu_years_${i}`),b529=$(`edu_529_${i}`),utma=$(`edu_utma_${i}`),cur=$(`edu_current_${i}`),pct=$(`edu_fund_pct_${i}`);
+    if(target)target.value=p.edu_target||'us_public_instate';
+    if(years)years.value=i===1?(p.edu_years_out??8):Math.min(25,(p.edu_years_out??8)+(i-1)*4);
+    if(b529)b529.value=0;if(utma)utma.value=0;if(cur)cur.value=0;if(pct)pct.value=100;
+  }
+  const method=document.querySelector('input[name="edu_contrib_method"][value="required"]');if(method)method.checked=kids>0;
+  const included=document.querySelector('input[name="edu_in_networth"][value="no"]');if(included)included.checked=true;
+}
+
 function loadPreset(key){
   const selected=PRESETS[key];if(!selected)return;
-  const defaults={monthly_savings:0,debt_monthly:0,edu_kids:'0',edu_target:'na',edu_years_out:10,kids_roots:'na',spouse_pref:'neutral',move_feasibility:'likely',rnor_years:'0',portugal_ifci:'no'};
+  const defaults={monthly_savings:0,debt_monthly:0,edu_kids:'0',kids_roots:'na',spouse_pref:'neutral',move_feasibility:'likely',rnor_years:'0',portugal_ifci:'no'};
   const p={...defaults,...selected};
   Object.keys(p).forEach(k=>{
     if(k==='countries'){document.querySelectorAll('input[name="countries"]').forEach(cb=>{cb.checked=p.countries.includes(cb.value);});return;}
@@ -1379,7 +1550,9 @@ function loadPreset(key){
     el.style.setProperty('--pct',pct+'%');
   });
   if($('ret_val'))$('ret_val').textContent=val('inv_return')+'%';
+  applyLegacyPresetEducation(selected);
   syncFamilyFields();
+  syncCollegeFields();
   updateSelectionCount();
   saveState();
 }
@@ -1390,10 +1563,23 @@ function runComparison(){
   const income=nonNegative('income'), savings=nonNegative('networth'), invReturn=val('inv_return')/100;
   const remittance=nonNegative('remittance'), indiaTripBudget=nonNegative('india_trips');
   const debtMonthly=nonNegative('debt_monthly');
-  const eduKidsCount=parseInt(radioVal('edu_kids')||'0');
-  const eduTarget=$('edu_target').value||'na';
-  const eduRaw=parseFloat($('edu_years_out').value);
-  const eduYearsOut=Number.isFinite(eduRaw)?clamp(eduRaw,0,20):10;
+  const eduKidsCount=clamp(parseInt(radioVal('edu_kids')||'0'),0,3);
+  const eduContributionMethod=radioVal('edu_contrib_method')||'current';
+  const eduIncludedInNetWorth=radioVal('edu_in_networth')||'no';
+  const eduChildren=[];
+  for(let i=1;i<=eduKidsCount;i++){
+    eduChildren.push({
+      target:$(`edu_target_${i}`)?.value||'us_public_instate',
+      balance529:nonNegative(`edu_529_${i}`),
+      balanceUtma:nonNegative(`edu_utma_${i}`),
+      yearsOut:clamp(nonNegative(`edu_years_${i}`),0,25),
+      fundPct:clamp(nonNegative(`edu_fund_pct_${i}`),0,100),
+      currentMonthly:nonNegative(`edu_current_${i}`),
+    });
+  }
+  const eduTotalAssets=eduChildren.reduce((sum,c)=>sum+c.balance529+c.balanceUtma,0);
+  const rawSavings=savings;
+  const retirementSavings=eduIncludedInNetWorth==='yes'?Math.max(0,rawSavings-eduTotalAssets):rawSavings;
   const desiredTier=parseInt(radioVal('desired_tier')||'2')-1;
   const visa=$('visa_status').value||'h1b';
   const work=radioVal('work')||'local';
@@ -1428,18 +1614,19 @@ function runComparison(){
 
   const errors=[];
   if(work!=='fire'&&income<=0)errors.push('Enter annual gross income greater than $0.');
-  if(work==='fire'&&savings<=0)errors.push('FIRE mode needs net worth greater than $0.');
+  if(work==='fire'&&retirementSavings<=0)errors.push('FIRE mode needs retirement-planning assets greater than $0 after education balances are removed.');
   if(retireAge<age)errors.push('Target retirement age cannot be below your current age.');
-  if(eduKidsCount>0&&eduTarget==='na')errors.push('Choose an education path or set college-funded children to 0.');
+  if(eduIncludedInNetWorth==='yes'&&eduTotalAssets>rawSavings)errors.push('Education balances cannot exceed the Step 1 net worth when you say they are included in it.');
+  eduChildren.forEach((c,i)=>{if(!EDU_PRESETS[c.target])errors.push(`Choose an education target for Child ${i+1}.`);});
   if(Object.values(weights).every(v=>v===0))errors.push('Set at least one priority above 0.');
   if(!validateSelection(selected))errors.push($('selection-error').textContent);
   if(errors.length){showValidation([...new Set(errors)]);return;}
 
   const reportedMonthlySavings=nonNegative('monthly_savings');
-  const inputs={income,savings,invReturn,remittance,indiaTripBudget,desiredTier,visa,work,
+  const inputs={income,savings:retirementSavings,rawSavings,invReturn,remittance,indiaTripBudget,desiredTier,visa,work,
     currentLoc,horizon,age,retireAge,weights,schoolPref,healthPref,familySize,
     incomeGrowth,riskTol,parentsLoc,kidsRoots,spousePref,moveFeasibility,debtMonthly,
-    eduKidsCount,eduTarget,eduYearsOut,rnorYears,portugalIfici};
+    eduKidsCount,eduChildren,eduContributionMethod,eduIncludedInNetWorth,eduTotalAssets,rnorYears,portugalIfici};
 
   const results={};
   selected.forEach(id=>{if(LOC[id])results[id]=scoreLocation(id,inputs);});
@@ -1457,11 +1644,13 @@ function runComparison(){
   const savingsGapNote=(reportedMonthlySavings>0&&Math.abs(currentModelSaves-reportedMonthlySavings)/reportedMonthlySavings>0.30)?
     `Your reported savings (${fmtD(reportedMonthlySavings)}/mo) differs from the model estimate (${fmtD(currentModelSaves)}/mo) by more than 30%. This usually means the location tier does not capture some of your real spending. Rankings below use the model estimate.`:'';
 
+  $('results').style.display='block';
   renderReportMeta(ranked,inputs);
   renderSummaryCard(ranked,results,inputs);
   renderTopPicks(ranked,results,inputs,savingsGapNote);
   renderEquivalence(ranked,results,inputs);
   renderTable(ranked,results,inputs);
+  renderCollegePlan(inputs);
   renderQoL(ranked);
   renderHiddenCosts(ranked,inputs);
   renderWealthChart(ranked,results,inputs);
@@ -1472,7 +1661,6 @@ function runComparison(){
   renderChoose(ranked);
 
   LAST_RUN={ranked,results,inputs,generatedAt:new Date().toISOString()};
-  $('results').style.display='block';
   setTimeout(()=>$('results').scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
@@ -1484,18 +1672,19 @@ function renderSummaryCard(ranked,results,inputs){
   const famFit=id=>familyProximityScore(id,inputs);
   const bestFamily=ranked.reduce((b,id)=>famFit(id)>famFit(b)?id:b,ranked[0]);
   const mostReal=ranked.reduce((b,id)=>results[id].realisticFit>results[b].realisticFit?id:b,ranked[0]);
+  const allDeficit=ranked.every(id=>results[id].monthlySaves<0);
   const biggestRisk=inputs.visa==='h1b'||inputs.visa==='l1'||inputs.visa==='gc_pending'?
     'Your current visa can turn job loss into a time-limited immigration problem. Keep a liquid bridge fund and a written exit plan.':
     inputs.work==='fire'?'The model uses a fixed return and 4% draw. A bad market early in retirement can change the outcome.':
     results[best].monthlySaves<0?'Even the top-ranked choice shows a monthly deficit. Fix income, tier, or spending before treating the ranking as actionable.':
     'The ranking depends heavily on your income-after-move assumption. Replace rough local pay with a real offer before deciding.';
   el.innerHTML=`<div class="summary-grid">
-    <div style="background:var(--green-light);border:1px solid #A8D5BB;border-radius:12px;padding:14px">
-      <div class="best-label" style="color:var(--green)">Balanced fit</div><div style="font-size:20px">${LOC[best].flag}</div>
-      <div style="font-size:13px;font-weight:700;color:var(--navy)">${LOC[best].name}</div><div style="font-size:11px;color:var(--text-mid)">${results[best].total.toFixed(0)}/100 overall</div>
+    <div style="background:${allDeficit?'var(--red-light)':'var(--green-light)'};border:1px solid ${allDeficit?'#F1A79E':'#A8D5BB'};border-radius:12px;padding:14px">
+      <div class="best-label" style="color:${allDeficit?'var(--red)':'var(--green)'}">${allDeficit?'No workable cash flow':'Balanced fit'}</div><div style="font-size:20px">${LOC[best].flag}</div>
+      <div style="font-size:13px;font-weight:700;color:var(--navy)">${LOC[best].name}</div><div style="font-size:11px;color:var(--text-mid)">${allDeficit?'Ranked by fit, but still in deficit':results[best].total.toFixed(0)+'/100 overall'}</div>
     </div>
     <div style="background:var(--blue-light);border:1px solid #9FC4E8;border-radius:12px;padding:14px">
-      <div class="best-label" style="color:var(--blue)">Highest monthly savings</div><div style="font-size:20px">${LOC[bestSavings].flag}</div>
+      <div class="best-label" style="color:var(--blue)">${allDeficit?'Smallest monthly deficit':'Highest monthly savings'}</div><div style="font-size:20px">${LOC[bestSavings].flag}</div>
       <div style="font-size:13px;font-weight:700;color:var(--navy)">${LOC[bestSavings].name}</div><div style="font-size:11px;color:var(--text-mid)">${fmtD(results[bestSavings].monthlySaves)}/mo</div>
     </div>
     <div style="background:var(--purple-light);border:1px solid #C8ACE8;border-radius:12px;padding:14px">
@@ -1529,11 +1718,12 @@ function renderTopPicks(ranked,results,inputs,savingsGapNote){
     local:'Local market salary mode keeps your entered income unchanged in your current location, then scales other destinations relative to that market. It is still a rough planning estimate, not a salary quote. Replace it with a real offer when available.',
   };
   if(modeNotes[inputs.work]) html+=`<div class="notice" style="margin-bottom:12px">${modeNotes[inputs.work]}</div>`;
-  const eduFund=eduMonthlySavings(inputs);
+  const eduPlan=educationPlan(inputs);
   const obligations=[];
   if(inputs.debtMonthly>0) obligations.push(`${fmtD(inputs.debtMonthly)}/mo in existing debt payments`);
-  if(eduFund>0) obligations.push(`${fmtD(eduFund)}/mo toward a ${EDU_PRESETS_LABEL[inputs.eduTarget]||'education'} fund for ${inputs.eduKidsCount} kid${inputs.eduKidsCount>1?'s':''} (${inputs.eduYearsOut}yr horizon)`);
+  if(eduPlan.totalContributionUsed>0) obligations.push(`${fmtD(eduPlan.totalContributionUsed)}/mo in college contributions (${inputs.eduContributionMethod==='required'?'calculated need':'current amount'})`);
   if(obligations.length) html+=`<div class="notice" style="margin-bottom:12px">Every number below already deducts ${obligations.join(' and ')} – this applies at every location, not just where you live now.</div>`;
+  if(eduPlan.totalAssets>0)html+=`<div class="notice" style="margin-bottom:12px">Education accounts: ${fmtD(eduPlan.totalAssets)}. ${inputs.eduIncludedInNetWorth==='yes'?`They were removed from Step 1 net worth, leaving ${fmtD(inputs.savings)} for FIRE and retirement projections.`:'They were entered separately and were not subtracted from Step 1 net worth.'}</div>`;
   if(savingsGapNote) html+=`<div class="notice" style="margin-bottom:12px">${savingsGapNote}</div>`;
   html+='<div class="picks-row">'+top.map((id,i)=>{
     const r=results[id],loc=LOC[id];
@@ -1553,9 +1743,9 @@ function renderTopPicks(ranked,results,inputs,savingsGapNote){
         <div class="pick-pill">${fireDisplay(r,inputs)}</div>
       </div>
       <div class="pick-metrics">
-        <div class="pm"><div class="pm-label">Take-Home</div><div class="pm-val">${fmtK(r.monthlyNet)}/mo</div></div>
+        <div class="pm"><div class="pm-label">Post-Tax Income</div><div class="pm-val">${fmtK(r.postTaxMonthly)}/mo</div></div>
         <div class="pm"><div class="pm-label">Tier Cost</div><div class="pm-val">${fmtK(r.monthlyCost)}/mo</div></div>
-        <div class="pm"><div class="pm-label">Monthly Saves</div><div class="pm-val">${r.monthlySaves>0?'+':''}${fmtK(r.monthlySaves)}</div></div>
+        <div class="pm"><div class="pm-label">Net Cash Flow</div><div class="pm-val">${r.monthlySaves>0?'+':''}${fmtK(r.monthlySaves)}</div></div>
         <div class="pm"><div class="pm-label">Risk Level</div><div class="pm-val">${r.riskScore<30?'Low':r.riskScore<55?'Medium':'High'}</div></div>
       </div>
       <div class="pick-sentiment">${r.sentiment}</div>
@@ -1588,9 +1778,9 @@ function renderEquivalence(ranked,results,inputs){
         <span class="equiv-direction ${isCurrentLoc?'dir-same':('dir-'+eq.direction)}">${isCurrentLoc?'Current':dirLabel[eq.direction]}</span>
       </div>
       <div class="equiv-income">${fmtD(eq.minIncome)}<span style="font-size:13px;color:var(--text-light)">/yr</span></div>
-      <div class="equiv-income-label">Min. income for <strong>${TIERS[inputs.desiredTier]}</strong> tier (${familyLabel(inputs.familySize).toLowerCase()}) at your current savings rate</div>
+      <div class="equiv-income-label">Min. income for <strong>${TIERS[inputs.desiredTier]}</strong> tier (${familyLabel(inputs.familySize).toLowerCase()}) at the modelled current-location savings rate</div>
       <div class="equiv-gap ${gapClass}">${gapText}</div>
-      <div style="font-size:11px;color:var(--text-light);margin-top:5px">${fmtK(eq.tgtGross)} gross → ${fmtK(eq.actualNet)}/mo net · ${fmtK(eq.tgtCost)}/mo cost${note}</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:5px">${fmtK(eq.tgtGross)} gross → ${fmtK(postTaxMoAt(id,inputs,headlineYearFor(inputs),eq.tgtGross))}/mo post-tax → ${fmtK(eq.actualNet)}/mo after fixed commitments · ${fmtK(eq.tgtCost)}/mo lifestyle${note}</div>
     </div>`;
   }).join('');
 }
@@ -1599,8 +1789,8 @@ function renderEquivalence(ranked,results,inputs){
 function renderTable(ranked,results,inputs){
   const dirTag={up:'<span class="tag-up">Upgrade</span>',same:'<span class="tag-same">Similar</span>',down:'<span class="tag-down">Downgrade</span>'};
   let html=`<thead><tr>
-    <th>Location</th><th>Gross Used/yr</th><th>Take-Home/mo*</th><th>Tier Cost/mo</th><th>Saves/mo*</th><th>Saves %*</th>
-    <th>FIRE</th><th>Risk</th><th>Min Income</th><th>Direction</th>
+    <th>Location</th><th>Gross Used/yr</th><th>Post-Tax/mo</th><th>Fixed/mo*</th><th>Lifestyle/mo</th><th>Net Cash Flow/mo</th><th>Cash Flow %</th>
+    <th>FIRE</th><th>Move Risk</th><th>Min Income</th><th>Direction</th>
   </tr></thead><tbody>`;
   ranked.forEach(id=>{
     const r=results[id],loc=LOC[id];
@@ -1609,7 +1799,7 @@ function renderTable(ranked,results,inputs){
     const rkC=r.riskScore<30?'good':r.riskScore<55?'warn':'bad';
     html+=`<tr>
       <td>${loc.flag} ${loc.name}</td>
-      <td>${fmtK(r.grossAnnual)}</td><td>${fmtD(r.monthlyNet)}</td><td>${fmtD(r.monthlyCost)}</td>
+      <td>${fmtK(r.grossAnnual)}</td><td>${fmtD(r.postTaxMonthly)}</td><td>${fmtD(r.fixedCommitments)}</td><td>${fmtD(r.monthlyCost)}</td>
       <td class="${srC}">${r.monthlySaves>=0?'+':''}${fmtD(r.monthlySaves)}</td>
       <td class="${srC}">${fmtPct(r.savesRate)}</td>
       <td class="${frC}">${fireDisplay(r,inputs).replace('FIRE: ','')}</td>
@@ -1619,6 +1809,35 @@ function renderTable(ranked,results,inputs){
     </tr>`;
   });
   $('snap-table').innerHTML=html+'</tbody>';
+}
+
+// ─── RENDER: COLLEGE PLAN ────────────────────────────────────────────────────
+function renderCollegePlan(inputs){
+  const section=$('r-college');
+  const grid=$('college-results-grid');
+  const summary=$('college-plan-summary');
+  if(!section||!grid||!summary)return;
+  const plan=educationPlan(inputs);
+  if(!plan.children.length){section.style.display='none';grid.innerHTML='';return;}
+  section.style.display='';
+  const method=inputs.eduContributionMethod==='required'?'Calculated contribution needed':'Current contribution entered';
+  summary.innerHTML=`<strong>${method}:</strong> ${fmtD(plan.totalContributionUsed)}/month used in every location's cash-flow calculation. Existing education assets: ${fmtD(plan.totalAssets)}. Retirement-planning assets: ${fmtD(inputs.savings)}${inputs.eduIncludedInNetWorth==='yes'?' after education accounts were removed from Step 1 net worth':''}.`;
+  grid.innerHTML=plan.children.map(c=>{
+    const gap=c.gap;
+    const ok=gap<=1;
+    const startText=c.yearsOut<=0?'Within 12 months':`${c.yearsOut} year${c.yearsOut===1?'':'s'}`;
+    return`<div class="college-result-card ${ok?'good-plan':'gap-plan'}">
+      <div class="college-result-head"><strong>Child ${c.index}</strong><span class="college-status ${ok?'ok':'gap'}">${ok?'On track':'Funding gap'}</span></div>
+      <div style="font-size:11px;color:var(--text-mid);margin-bottom:8px">${EDU_PRESETS_LABEL[c.target]} · starts ${startText.toLowerCase()} · parents fund ${Math.round(c.fundPct)}%</div>
+      <div class="college-metric"><span>Target family share</span><strong>${fmtD(c.targetTotal)}</strong></div>
+      <div class="college-metric"><span>Balance needed at start</span><strong>${fmtD(c.neededAtStart)}</strong></div>
+      <div class="college-metric"><span>Existing 529 + UTMA</span><strong>${fmtD((c.balance529||0)+(c.balanceUtma||0))}</strong></div>
+      <div class="college-metric"><span>Monthly amount used</span><strong>${fmtD(c.contributionUsed)}</strong></div>
+      <div class="college-metric"><span>Calculated monthly need</span><strong>${fmtD(c.requiredMonthly)}</strong></div>
+      <div class="college-metric"><span>Projected at college start</span><strong>${fmtD(c.projectedAtStart)}</strong></div>
+      <div class="college-metric"><span>${gap>0?'Remaining gap':'Projected surplus'}</span><strong>${fmtD(Math.abs(gap))}</strong></div>
+    </div>`;
+  }).join('');
 }
 
 // ─── RENDER: QOL SCORES ───────────────────────────────────────────────────────
@@ -1658,7 +1877,7 @@ function renderHiddenCosts(ranked,inputs){
 function renderWealthChart(ranked,results,inputs){
   const canvas=$('wealthChart'),ctx=canvas.getContext('2d');
   const dpr=window.devicePixelRatio||1;
-  const W=canvas.parentElement.offsetWidth,H=220;
+  const W=Math.max(320,canvas.parentElement.offsetWidth||canvas.parentElement.getBoundingClientRect().width||800),H=220;
   canvas.width=W*dpr;canvas.height=H*dpr;
   canvas.style.width=W+'px';canvas.style.height=H+'px';
   ctx.scale(dpr,dpr);
@@ -1712,9 +1931,9 @@ function renderBestFor(ranked,results){
   const cats=[
     {label:'💰 Monthly Savings',fn:r=>r.monthlySaves,fmt:(id,r)=>fmtD(r.monthlySaves)+'/mo'},
     {label:'🔥 Earliest FIRE',fn:r=>r.fire!==null?100-r.fire:0,fmt:(id,r)=>r.fire!==null?r.fire+' years':'50+ years'},
-    {label:'🛡️ Most Secure',fn:r=>100-r.riskScore,fmt:(id,r)=>`Risk: ${r.riskScore<30?'Low':r.riskScore<55?'Med':'High'}`},
+    {label:'🛡️ Lowest Move Risk',fn:r=>100-r.riskScore,fmt:(id,r)=>`Move risk: ${r.riskScore<30?'Low':r.riskScore<55?'Med':'High'}`},
     {label:'🌍 QoL Score',fn:r=>r.lsScore,fmt:(id,r)=>`QoL: ${r.lsScore}/50`},
-    {label:'💸 Highest Take-Home',fn:r=>r.monthlyNet,fmt:(id,r)=>fmtK(r.monthlyNet)+'/mo net'},
+    {label:'💸 Highest Post-Tax Income',fn:r=>r.postTaxMonthly,fmt:(id,r)=>fmtK(r.postTaxMonthly)+'/mo post-tax'},
     {label:'⬆ Lifestyle Upgrade',fn:r=>r.direction==='up'?1:r.direction==='same'?0:-1,fmt:(id,r)=>({up:'Upgrade',same:'Similar',down:'Downgrade'}[r.direction])},
   ];
   $('best-grid').innerHTML=cats.map(cat=>{
@@ -1802,12 +2021,13 @@ function renderScenarios(ranked,results,inputs,scens){
       if(INDIA_IDS.includes(id))return['INR earnings/savings lose 20% USD value. Remittances from abroad buy more, but INR-side wealth shrinks in USD terms.','r'];
       if(id==='uae')return['AED is pegged to USD. No direct currency impact. Your savings are fully protected.','g'];
       if(id.startsWith('usa_'))return['You ARE the USD. Strongest possible position in a USD-strength scenario.','g'];
-      return['Local currency exposure vs USD is real but historically smaller than INR swings. Mixed position.','a'];
+      return['No direct INR effect is modeled. Your result changes only through INR assets, India expenses, or remittances you actually hold.','a'];
     };
     ranked.slice(0,6).map(id=>{const[desc,cls]=fxProfile(id);return[id,desc,cls];}).forEach(([id,desc,cls])=>{
       if(!LOC[id])return;
+      const val=INDIA_IDS.includes(id)?'−20% USD value':cls==='g'?'Protected':'No direct effect';
       html+=`<div class="sc ${cls}"><div class="sc-title">${LOC[id].flag} ${LOC[id].name}</div>
-        <div class="sc-val">${cls==='g'?'Protected':'−20% USD value'}</div>
+        <div class="sc-val">${val}</div>
         <div class="sc-desc">${desc}</div></div>`;
     });
     html+=`</div>`;
@@ -1918,8 +2138,18 @@ function applyState(data){
     const radio=document.querySelector(`input[name="${k}"][value="${CSS.escape(String(data[k]))}"]`);
     if(radio)radio.checked=true;
   });
+  // Migrate the single-child college fields from v3.3.x into the new per-child model.
+  if(data.edu_target&&!data.edu_target_1){
+    const count=clamp(parseInt(data.edu_kids||0),0,3);
+    for(let i=1;i<=count;i++){
+      if($(`edu_target_${i}`))$(`edu_target_${i}`).value=data.edu_target;
+      if($(`edu_years_${i}`))$(`edu_years_${i}`).value=Math.min(25,Number(data.edu_years_out||10)+(i-1)*4);
+    }
+    const required=document.querySelector('input[name="edu_contrib_method"][value="required"]');if(required&&count>0)required.checked=true;
+  }
   refreshSliderUI();
   syncFamilyFields();
+  syncCollegeFields();
   updateSelectionCount();
 }
 function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(collectState()));}catch(e){}}
@@ -1931,7 +2161,7 @@ function loadState(){
   }catch(e){history.replaceState(null,'',location.pathname+location.search);}
   if(!loaded){
     try{
-      const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('nriLifeV3');
+      const raw=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('nriLifeV33')||localStorage.getItem('nriLifeV3');
       if(raw)applyState(JSON.parse(raw));
     }catch(e){}
   }
@@ -1944,6 +2174,32 @@ function refreshSliderUI(){
   if($('ret_val'))$('ret_val').textContent=val('inv_return')+'%';
   [['w_finance','pw_finance'],['w_family','pw_family'],['w_health','pw_health'],['w_edu','pw_edu'],['w_safety','pw_safety'],['w_wlb','pw_wlb'],['w_community','pw_community'],['w_aqi','pw_aqi'],['w_convenience','pw_convenience'],['w_visa','pw_visa']].forEach(([id,did])=>{if($(id)&&$(did))$(did).textContent=$(id).value;});
 }
+function syncCollegeFields(){
+  const kids=clamp(parseInt(radioVal('edu_kids')||'0'),0,3);
+  for(let i=1;i<=3;i++){
+    const card=$(`college-child-${i}`);if(card)card.hidden=i>kids;
+  }
+  const useRequired=radioVal('edu_contrib_method')==='required';
+  document.querySelectorAll('.current-contrib-field').forEach(field=>{
+    field.style.opacity=useRequired?'.55':'1';
+    const input=field.querySelector('input');if(input)input.disabled=useRequired;
+  });
+  updateCollegeInputSummary();
+}
+function currentCollegeInputs(){
+  const kids=clamp(parseInt(radioVal('edu_kids')||'0'),0,3);
+  const invReturn=val('inv_return')/100;
+  const eduChildren=[];
+  for(let i=1;i<=kids;i++)eduChildren.push({target:$(`edu_target_${i}`)?.value||'us_public_instate',balance529:nonNegative(`edu_529_${i}`),balanceUtma:nonNegative(`edu_utma_${i}`),yearsOut:clamp(nonNegative(`edu_years_${i}`),0,25),fundPct:clamp(nonNegative(`edu_fund_pct_${i}`),0,100),currentMonthly:nonNegative(`edu_current_${i}`)});
+  return{eduChildren,eduContributionMethod:radioVal('edu_contrib_method')||'current',eduIncludedInNetWorth:radioVal('edu_in_networth')||'no',invReturn};
+}
+function updateCollegeInputSummary(){
+  const el=$('college-input-summary');if(!el)return;
+  const inputs=currentCollegeInputs();const plan=educationPlan(inputs);
+  if(!plan.children.length){el.innerHTML='<strong>No college plan selected.</strong> Education accounts will not affect the calculation.';return;}
+  el.innerHTML=`<strong>${plan.children.length} child${plan.children.length>1?'ren':''}:</strong> ${fmtD(plan.totalAssets)} in existing 529/UTMA assets. ${inputs.eduContributionMethod==='required'?`${fmtD(plan.totalRequiredMonthly)}/month calculated need`:`${fmtD(plan.totalCurrentMonthly)}/month current contributions`} will be used in cash flow. ${inputs.eduIncludedInNetWorth==='yes'?'Education balances will be removed from Step 1 net worth.':'Education balances will remain separate from Step 1 net worth.'}`;
+}
+
 function syncFamilyFields(){
   const children=childCountFor(radioVal('family'));
   const roots=$('kids_roots');
@@ -1992,7 +2248,7 @@ async function copyScenarioLink(){
 }
 function resetCalculator(){
   if(!confirm('Reset all inputs and saved settings?'))return;
-  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('nriLifeV3');}catch(e){}
+  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('nriLifeV33');localStorage.removeItem('nriLifeV3');}catch(e){}
   history.replaceState(null,'',location.pathname+location.search);location.reload();
 }
 function toast(message){
@@ -2003,7 +2259,8 @@ function toast(message){
 function familyLabel(v){return({'1':'Single','2':'Couple','3':'Family with 1 child','4':'Family with 2 children','5':'Family with 3+ children'})[v]||'Household';}
 function renderReportMeta(ranked,inputs){
   const el=$('report-meta');if(!el)return;
-  el.innerHTML=`<strong>NRI Life Calculator report</strong><br>Generated: ${new Date().toLocaleString()} · Data version: ${DATA_VERSION}<br>Current: ${LOC[inputs.currentLoc].name} · Household: ${familyLabel(inputs.familySize)} · Income mode: ${inputs.work} · Lifestyle: ${TIERS[inputs.desiredTier]}<br>Compared: ${ranked.map(id=>LOC[id].name).join(', ')} · Portfolio return after inflation: ${(inputs.invReturn*100).toFixed(1)}% · RNOR assumption: ${inputs.rnorYears} year(s) · Portugal IFICI: ${inputs.portugalIfici==='yes'?'confirmed':'not applied'}`;
+  const plan=educationPlan(inputs);
+  el.innerHTML=`<strong>NRI Life Calculator report</strong><br>Generated: ${new Date().toLocaleString()} · Data version: ${DATA_VERSION}<br>Current: ${LOC[inputs.currentLoc].name} · Household: ${familyLabel(inputs.familySize)} · Income mode: ${inputs.work} · Lifestyle: ${TIERS[inputs.desiredTier]}<br>Compared: ${ranked.map(id=>LOC[id].name).join(', ')} · Portfolio return after inflation: ${(inputs.invReturn*100).toFixed(1)}% · RNOR assumption: ${inputs.rnorYears} year(s) · Portugal IFICI: ${inputs.portugalIfici==='yes'?'confirmed':'not applied'}<br>Step 1 net worth: ${fmtD(inputs.rawSavings)} · Education assets: ${fmtD(plan.totalAssets)} · Retirement-planning assets used: ${fmtD(inputs.savings)}`;
 }
 function preparePrint(){
   if(!LAST_RUN){runComparison();if(!LAST_RUN)return;}
@@ -2017,9 +2274,9 @@ async function copyResultSummary(){
   const text=lines.join('\n');
   try{await navigator.clipboard.writeText(text);toast('Result summary copied.');}catch(e){prompt('Copy result summary:',text);}
 }
-document.addEventListener('change',e=>{if(e.target.matches('input,select')){if(e.target.name==='family')syncFamilyFields();saveState();}});
-document.addEventListener('input',e=>{if(e.target.matches('input,select'))saveState();});
-window.addEventListener('load',()=>{installAccessibilityLabels();installStepActions();loadState();refreshSliderUI();syncFamilyFields();updateSelectionCount();});
+document.addEventListener('change',e=>{if(e.target.matches('input,select')){if(e.target.name==='family')syncFamilyFields();if(e.target.name==='edu_kids'||e.target.name==='edu_contrib_method'||e.target.name==='edu_in_networth'||e.target.id?.startsWith('edu_'))syncCollegeFields();saveState();}});
+document.addEventListener('input',e=>{if(e.target.matches('input,select')){if(e.target.id?.startsWith('edu_')||e.target.id==='inv_return')updateCollegeInputSummary();saveState();}});
+window.addEventListener('load',()=>{installAccessibilityLabels();installStepActions();loadState();refreshSliderUI();syncFamilyFields();syncCollegeFields();updateSelectionCount();});
 </script>
 
 </body>
